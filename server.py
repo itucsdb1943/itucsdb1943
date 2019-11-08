@@ -18,7 +18,7 @@ def postAdd_page():
 
 @app.route("/blog")
 def blog_page():
-    return "blog page"
+    return render_template("blog/blog.html")
 
 @app.route("/findvet")
 def findVet_page():
@@ -26,7 +26,7 @@ def findVet_page():
 
 @app.route("/foundation")
 def foundation_page():
-    return "foundation page"
+    return render_template("foundation/foundation.html")
 
 @app.route("/notice")
 def notice_page():
