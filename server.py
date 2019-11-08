@@ -30,7 +30,7 @@ def foundation_page():
 
 @app.route("/notice")
 def notice_page():
-    return "notice page"
+    return render_template("notifications.html")
 
 @app.route("/notice/add")
 def announcementAdd_page():
@@ -55,11 +55,8 @@ def patigramAdd_page():
 
 @app.route("/notifications")
 def notifications_page():
-    return "Notifications page"
+    return render_template("notifications.html")
 
-@app.route("/notifications")
-def notificationsAdd_page():
-    return "Notifications ad  page"
 
 if __name__ == "__main__":
     app.run(debug = True)
