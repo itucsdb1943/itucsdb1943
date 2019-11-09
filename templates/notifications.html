@@ -1,0 +1,41 @@
+{% extends "navbar.html" %}
+{% block title %} Notifications Page {%endblock %}
+{% block csslinks %}<link rel="stylesheet" href="/static/noti.css"> {% endblock %}
+{% block content %}
+
+
+<div class="pageHeader">
+<h1> Notifications</h1>
+</div>
+<div class="noti">
+    <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Beğeni</h5>
+                <small class="text-muted">Paylaşıma git</small>
+
+            </div>
+            <p class="mb-1">"Kedim ve ben" isimli paylaşımınız Bengisu Pınar tarafından beğenildi.</p>
+            <small>08.11.2019 09:43</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Yorum</h5>
+                <small class="text-muted">Paylaşıma git</small>
+            </div>
+            <p class="mb-1">Kayıp ilanınıza Ilknur Çelik tarafından yorum yapıldı</p>
+            <small class="text-muted">P06.11.2019 11:49</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Işlem Başarılı</h5>
+                <small class="text-muted">Paylaşıma git</small>
+            </div>
+            <p class="mb-1">Kayıp ilanınız başarıyla eklenmiştir</p>
+            <small class="text-muted">03.11.2019 11:49</small>
+            </a>
+    </div>
+</div>
+
+
+{% endblock %}
