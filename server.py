@@ -30,7 +30,7 @@ def foundation_page():
 
 @app.route("/notice")
 def notice_page():
-    return render_template("notifications.html")
+    return render_template("profile.html")
 
 @app.route("/notice/add")
 def announcementAdd_page():
