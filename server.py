@@ -1,5 +1,9 @@
 from flask import Flask, render_template
 
+import os
+import urllib.parse as up
+import psycopg2
+
 
 app = Flask(__name__)
 
@@ -57,6 +61,14 @@ def patigramAdd_page():
 def notifications_page():
     return render_template("notifications.html")
 
-
 if __name__ == "__main__":
     app.run(debug = True)
+
+up.uses_netloc.append("postgres")
+url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
+conn = psycopg2.connect(database=url.path[1:],
+user=url.username,
+password=url.password,
+host=url.hostname,
+port=url.port
+)
