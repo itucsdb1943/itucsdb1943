@@ -1,7 +1,53 @@
 {% extends "navbar.html" %}
+{% block csslinks %}    <link rel="stylesheet" href="{{ url_for('static', filename='patigra.css') }}"> {% endblock %}
+
 {% block title %} Home Page {%endblock %}
 {% block content %}
 
-<h1> This is Patigram web page </h1>>
 
+<ul class="list-group list-group-flush">
+    <li class="list-group-item" > 
+        <div class="media-body">
+            <div class = "post-title">
+                <p class="user-name text-info">User's name</p>
+                <p class="post-text text-info">Title</p>
+            </div>
+            
+            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
+            <div class="like" >
+                <button type="button " class="btn btn-outline-info" > &hearts; </button>
+                <button type="button" class="btn btn-outline-info"  > Like number </button>
+            </div>      
+        </div>    
+    </li>    
+    <li class="list-group-item" > 
+        <div class="media-body">
+            <div class = "post-title">
+                <p class="user-name text-info">User's name</p>
+                <p class="post-text text-info">Title</p>
+            </div>
+            
+            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
+            <div class="like" >
+                <button type="button " class="btn btn-outline-info" > &hearts; </button>
+                <button type="button" class="btn btn-outline-info"  > Like number </button>
+            </div>      
+        </div>    
+    </li>
+    <li class="list-group-item" > 
+        <div class="media-body">
+            <div class = "post-title">
+                <p class="user-name text-info">User's name</p>
+                <p class="post-text text-info">Title</p>
+            </div>
+            
+            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
+            <div class="like" >
+                <button type="button " class="btn btn-outline-info" > &hearts; </button>
+                <button type="button" class="btn btn-outline-info"  > Like number </button>
+            </div>      
+        </div>    
+    </li>
+  </ul>
+  <a href="https://www.sciencealert.com/here-s-why-cats-have-such-weird-eyes">Background image's website </a>
 {% endblock %}
