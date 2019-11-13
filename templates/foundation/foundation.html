@@ -1,7 +1,54 @@
 {% extends "navbar.html" %}
 {% block title %} Foundation Page {%endblock %}
+
+{% block csslinks %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="../../static/foundation.css">  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   {% endblock %}
 {% block content %}
+<div class="pageHeader">
+    <h1> Foundations</h1>
+</div>
 
-<h1> This is Foundation web page </h1>>
-
+<div class="card" style="max-width: 700px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="../../static/verbipati.png" class="img" alt="verbipati">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h1 class="card-title">Ver Bi' Pati</h1>
+        <p class="card-text">As a volunteer student of Ver Bi ’Pati project, Istanbul Technical University Volunteering Club is a student club that deals with the living needs and health problems of the animals on our campus and works to improve living conditions through reproductive control and ownership.</p>
+		 <ul class="container details" >  
+			<a href="https://www.facebook.com/VerBiPati/" target= "_blank" class="fa fa-facebook"></a>
+			<a href="https://twitter.com/itulupatiler" target= "_blank" class="fa fa-twitter"></a>
+			<a href="http://www.gonullu.itu.edu.tr/verbipati/" target= "_blank" class="fa fa-google"></a>
+			<a href="https://www.instagram.com/itulupatiler/"target= "_blank" class="fa fa-instagram"></a>
+         </ul>
+      </div>
+    </div>
+  </div>
+</div>
+ <div class="card" style="max-width: 700px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="../../static/hkd.png" class="img" alt="hkd">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h1 class="card-title">Türkiye Hayvanları Koruma Derneği</h1>
+        <p class="card-text">The association was founded in 1912 by American Alice Manning. The group was known as "Compassion arms" (Arms of Mercy) which was the Turkey's first animal welfare group.</p>
+		 <ul class="container details" >  
+			<a href="https://www.facebook.com/groups/217161628301174/" target= "_blank" class="fa fa-facebook"></a>
+			<a href="https://twitter.com/thkdturkey" target= "_blank" class="fa fa-twitter"></a>
+			<a href="https://www.thkd.org.tr/hakkimizda.php" target= "_blank" class="fa fa-google"></a>
+			<a href="https://www.instagram.com/thkdturkiye/"target= "_blank" class="fa fa-instagram"></a>
+         </ul>
+         <a href="https://www.thkd.org.tr/bagis.php" target="_blank">Donate to foundation</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
+

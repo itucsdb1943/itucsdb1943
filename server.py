@@ -16,6 +16,9 @@ def post_page():
 def postAdd_page():
     return "add post page"
 
+@app.route("/forum/detail")
+def forumDetail_Page():
+    return render_template("forumDetail.html")
 @app.route("/blog")
 def blog_page():
     return render_template("blog/blog.html")
@@ -38,7 +41,7 @@ def announcementAdd_page():
 
 @app.route("/forum")
 def forum_page():
-    return "Forum page"
+    return render_template("forum.html")
 
 @app.route("/forum/add")
 def forumAdd_page():
