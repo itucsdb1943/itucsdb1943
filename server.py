@@ -1,15 +1,25 @@
 from flask import Flask, render_template
+import psycopg2 as dbapi2
+from flask import current_app
+
 
 import os
-import urllib.parse as up
+try:
+    from urllib.parse import urlparse
+except ImportError:
+     from urlparse import urlparse
+         
 import psycopg2
-
-
 app = Flask(__name__)
-
+url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
 @app.route("/")
 def home_page():
+    with dbapi2.connect(url) as connection:
+        cursor = connection.cursor()
+        statement = """SELECT * FROM POST """
+        cursor.execute(statement)
+        print(cursor.fetchone())
     return render_template("home.html")
 
 @app.route("/post")
@@ -63,12 +73,11 @@ def notifications_page():
 
 if __name__ == "__main__":
     app.run(debug = True)
-
-up.uses_netloc.append("postgres")
-url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
-conn = psycopg2.connect(database=url.path[1:],
-user=url.username,
-password=url.password,
-host=url.hostname,
-port=url.port
-)
+    up.uses_netloc.append("postgres")
+    url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
+    conn = psycopg2.connect(database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+    )
