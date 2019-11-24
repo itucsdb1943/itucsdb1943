@@ -9,8 +9,6 @@ import psycopg2 as dbapi2
 site = Blueprint('site', __name__)
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
-
-
 @site.route("/register", methods=['GET','POST'])
 def register_page():
     if request.method == "GET":
@@ -28,12 +26,20 @@ def register_page():
         youtube = form['youtube']
         website = form['website']
         isVet = form['isVet']
-        print(name)
-        print(email)
-        print(isVet)
         with dbapi2.connect(url) as connection:
             cursor = connection.cursor()
             statement = """INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD)
             VALUES (%s,%s,%s,1,%s); """
-            cursor.execute(statement,(name,surname,email,hashedPassword))        
+            cursor.execute(statement,(name,surname,email,hashedPassword))
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            statement = """ SELECT USERID FROM USERS WHERE EMAIL = '{0}' """.format(email)
+            cursor.execute(statement)
+            userid = cursor.fetchone()[0]        
+            print(userid)
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            statement = """ INSERT INTO SOCIALMEDIA(OWNERID,FACEBOOK,TWITTER,INSTAGRAM,YOUTUBE,WEBSITE)
+                            VALUES('{0}','{1}','{2}','{3}','{4}','{5}') """.format(userid,facebook,twitter,instagram,youtube,website)
+            cursor.execute(statement)        
         return render_template("register.html")
