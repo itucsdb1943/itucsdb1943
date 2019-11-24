@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request
 import psycopg2 as dbapi2
 from flask import current_app
-
-from classes.Database import Database
-from classes.post import *
+from views import site
+#from classes.Database import Database
+#from classes.post import *
 
 
 import os
@@ -14,13 +14,14 @@ except ImportError:
          
 import psycopg2
 app = Flask(__name__)
+app.register_blueprint(site)
+
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
-
-db = Database()
-db.add_post(Post( 1, 1, "19.11.2019", "static/saziskom.jpg", "Minik Şişkom",description ="sdfdgfg", posttag = "Cat"))
-db.add_post(Post( 2, 1, "19.11.2019", "static/alp.jpeg", "Deneme alp's foto "))
-app.config["db"] = db
+#
+#db = Database()
+#db.add_post(Post( 2, 1, "19.11.2019", "static/alp.jpeg", "Deneme alp's foto "))
+#app.config["db"] = db
 
 
 @app.route("/")

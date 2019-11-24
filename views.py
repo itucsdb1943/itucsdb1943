@@ -1,61 +1,39 @@
-from flask import Flask, render_template
-from server import app
-from flask import current_app
+from flask import Blueprint, render_template , redirect , current_app,url_for
+from flask import request,flash,session,abort
+from datetime import datetime as dt
+from flask_login import LoginManager,login_user,login_required,current_user
+from flask_login import logout_user
+from passlib.apps import custom_app_context as pwd_context
+import psycopg2 as dbapi2
 
-@app.route("/")
-def home_page():
-    with dbapi2.connect(url) as connection:
-        cursor = connection.cursor()
-        statement = """SELECT * FROM POST """
-        cursor.execute(statement)
-        print(cursor.fetchone())
-    return render_template("home.html")
-
-@app.route("/post")
-def post_page():
-    return "Post page"
-
-@app.route("/post/add")
-def postAdd_page():
-    return "add post page"
-
-@app.route("/blog")
-def blog_page():
-    return render_template("blog/blog.html")
-
-@app.route("/findvet")
-def findVet_page():
-    return "veteriner finding page"
-
-@app.route("/foundation")
-def foundation_page():
-    return render_template("foundation/foundation.html")
-
-@app.route("/notice")
-def notice_page():
-    return render_template("profile.html")
-
-@app.route("/notice/add")
-def announcementAdd_page():
-    return "announcement add page"
-
-@app.route("/forum")
-def forum_page():
-    return "Forum page"
-
-@app.route("/forum/add")
-def forumAdd_page():
-    return "Forum add page"
-
-@app.route("/patigram")
-def patigram_page():
-    return render_template("patigram/patigram.html")
-
-@app.route("/patigram/add")
-def patigramAdd_page():
-    return "Patigram add page"
+site = Blueprint('site', __name__)
+url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
 
-@app.route("/notifications")
-def notifications_page():
-    return render_template("notifications.html")
+
+@site.route("/register", methods=['GET','POST'])
+def register_page():
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        form = request.form
+        name = form['name']
+        surname = form['surname']
+        email = form['email']
+        password = form['password']
+        hashedPassword = pwd_context.encrypt(password)
+        facebook = form['facebook']
+        twitter = form['twitter']
+        instagram = form['instagram']
+        youtube = form['youtube']
+        website = form['website']
+        isVet = form['isVet']
+        print(name)
+        print(email)
+        print(isVet)
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            statement = """INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD)
+            VALUES (%s,%s,%s,1,%s); """
+            cursor.execute(statement,(name,surname,email,hashedPassword))        
+        return render_template("register.html")
