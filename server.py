@@ -74,7 +74,7 @@ def forumAdd_page():
 def patigram_custom_page(post_key):
     db = current_app.config["db"]
     post = db.get_post(post_key)
-    if post is None
+    if post is None:
         abort(404)
     return render_template("patigram/patigram_custom.html", post=post)
 
