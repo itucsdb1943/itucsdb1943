@@ -26,6 +26,6 @@ class Database:
         posts = []
         for post_key,post_ in self.posts.items():
             post = Post(post_.postid, post_.userid, post_.postdate, post_.photo, post_.title, description = post_.description, posttag = post_.posttag)
-            posts.append(post_key, post)
+            posts.append((post_key, post))
         return posts
 

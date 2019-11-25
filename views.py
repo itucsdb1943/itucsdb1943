@@ -9,6 +9,7 @@ import psycopg2 as dbapi2
 site = Blueprint('site', __name__)
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
+
 @site.route("/register", methods=['GET','POST'])
 def register_page():
     if request.method == "GET":

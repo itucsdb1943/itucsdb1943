@@ -2,8 +2,8 @@ from flask import Flask, render_template,request
 import psycopg2 as dbapi2
 from flask import current_app
 from views import site
-#from classes.Database import Database
-#from classes.post import *
+from classes.Database import Database
+from classes.post import *
 
 
 import os
@@ -18,10 +18,11 @@ app.register_blueprint(site)
 
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
-#
-#db = Database()
-#db.add_post(Post( 2, 1, "19.11.2019", "static/alp.jpeg", "Deneme alp's foto "))
-#app.config["db"] = db
+
+db = Database()
+db.add_post(Post( 1, 1, "19.11.2019", "alp.jpeg", "Deneme alp's foto ", description="Cektırdıgım bır vesikalik fotografim"))
+db.add_post(Post( 2, 1, "19.11.2019", "saziskom.jpg", "Deneme sazis's foto ", description="Saziye'nin fotografını 1 yıl once cekmıstım ama artik bana kendini kucaklatmiyor minik siskocuk. Satoktan sonra iyice agresiflestı"))
+app.config["db"] = db
 
 
 @app.route("/")
@@ -68,6 +69,14 @@ def forum_page():
 @app.route("/forum/add")
 def forumAdd_page():
     return "Forum add page"
+
+@app.route("/patigram/<int:post_key>")
+def patigram_custom_page(post_key):
+    db = current_app.config["db"]
+    post = db.get_post(post_key)
+    if post is None
+        abort(404)
+    return render_template("patigram/patigram_custom.html", post=post)
 
 @app.route("/patigram")
 def patigram_page():

@@ -1,0 +1,28 @@
+{% extends "navbar.html" %}
+{% block csslinks %}    <link rel="stylesheet" href="{{ url_for('static', filename='patigra.css') }}"> {% endblock %}
+
+{% block title %} Home Page {%endblock %}
+{% block content %}
+
+<ul class="list-group list-group-flush">
+    <li class="list-group-item" > 
+        <div class="media-body">
+            <div class = "post-title">
+                <p class="user-name text-info">{{ post.userid}}</p>
+                <p class="post-text text-info">{{post.title}}</p>
+            </div>
+            
+            <img src="{{ url_for('static',filename='') }}{{post.photo}}" class="rounded border border-info rounded"  alt="{{ url_for('static', filename='') }}{{post.photo}}" > 
+            <div class="like" >
+                <button type="button " class="btn btn-outline-info" > &hearts; </button>
+                <button type="button" class="btn btn-outline-info"  > Like number </button>
+            </div> 
+            <div >
+                <p class="text-info ">{{ post.description}}</p>  
+            </div>>   
+        </div>  
+    </li> 
+ </ul>
+
+<a href="https://www.sciencealert.com/here-s-why-cats-have-such-weird-eyes">Background image's website </a>
+{% endblock %}
