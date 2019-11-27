@@ -20,8 +20,8 @@ url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql
 
 
 db = Database()
-db.add_post(Post( 1, 1, "19.11.2019", "alp.jpeg", "Deneme alp's foto ", description="Cektırdıgım bır vesikalik fotografim"))
-db.add_post(Post( 2, 1, "19.11.2019", "saziskom.jpg", "Deneme sazis's foto ", description="Saziye'nin fotografını 1 yıl once cekmıstım ama artik bana kendini kucaklatmiyor minik siskocuk. Satoktan sonra iyice agresiflestı"))
+db.add_post(Post( 1, 1, "19.11.2019", "alp.jpeg", "Deneme alp's foto ", description="Cektirdigim bir vesikalik fotografim"))
+db.add_post(Post( 2, 1, "19.11.2019", "saziskom.jpg", "Deneme sazis's foto ", description="Saziye'nin fotografini 1 yil once cekmistim ama artik bana kendini kucaklatmiyor minik siskocuk. Satoktan sonra iyice agresiflesti"))
 app.config["db"] = db
 
 
@@ -46,6 +46,9 @@ def postAdd_page():
 def blog_page():
     return render_template("blog/blog.html")
 
+@app.route("/blog/bloginfo")
+def blog_info_page():
+	return render_template("blog/bloginfo.html")
 @app.route("/findvet")
 def findVet_page():
     return "veteriner finding page"
