@@ -1,15 +1,23 @@
-
+import os
+from os.path import join, dirname, realpath
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template,request
 import psycopg2 as dbapi2
-from flask import current_app
+from flask import current_app, redirect, Flask,url_for
 from views import site
 from flask_login import LoginManager,login_required
 
 
 from datetime import datetime
-
 now = datetime.now()
-import os
+
+#For uploading photo
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
+ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
+
+
+
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -18,6 +26,7 @@ except ImportError:
 import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 from classes.post import *
 from classes.Users import *
@@ -32,8 +41,6 @@ url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql
 
 
 db = Database()
-db.add_post(Post( 1, 1, "19.11.2019", "alp.jpeg", "Deneme alp's foto ", description="Cektirdigim bir vesikalik fotografim"))
-db.add_post(Post( 2, 1, "19.11.2019", "saziskom.jpg", "Deneme sazis's foto ", description="Saziye'nin fotografini 1 yil once cekmistim ama artik bana kendini kucaklatmiyor minik siskocuk. Satoktan sonra iyice agresiflesti"))
 app.config["db"] = db
 
 @app.route("/")
@@ -94,19 +101,51 @@ def patigram_page():
     posts = db.get_posts()
     return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
 
+# Checking extensions of loaded file
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route("/patigram/add", methods=["GET","POST"])
 def patigram_add_page():
     if request.method == "GET":
         return render_template("patigram/patigramAdd.html")
     else:
-        form_photo = request.form["photo"]
-        form_title = request.form["title"]
+        errors = {}
+        # check if the post request has the file part
+        #if 'file' not in request.form:
+         #  flash('No file part')
+        file = request.files["image"]
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            errors["file"] = "An image is necessary for patigram post, please give one."
+            return  render_template("patigram/patigramAdd.html", errors=errors)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            form_photo = filename
+        form_title =  request.form.get("title", "").strip()
+        if len(form_title) == 0:
+            errors["title"] = "You should give a title to patigram post, please give one."
+            return  render_template("patigram/patigramAdd.html", errors=errors)
+        form_title = request.form['title']
+
         form_description = request.form["description"]
-        form_tag = request.form["tag"]
+        if request.form["cat"]:
+            form_tag = "cat"
+        elif request.form["dog"]:
+            form_tag = "dog"
+        elif request.form["bird"]:
+            form_tag = "bird"
+        else:
+            form_tag = "other"
+
         date_time = now.strftime("%d/%m/%y")
         user_id = 1
         post_id = 3
-        post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, tag=form_tag if form_tag else None)
+        post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, posttag=form_tag if form_tag else None)
         db = current_app.config["db"]
         post_key = db.add_post(post)
         return redirect(url_for("patigram_custom_page", post_key=post_key))
