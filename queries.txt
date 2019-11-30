@@ -128,3 +128,6 @@ CREATE TABLE SocialMedia(
     WEBSITE VARCHAR(255),
     PRIMARY KEY (OWNERID)
 )
+
+
+select userid,name,surname,email,isvet,password,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid

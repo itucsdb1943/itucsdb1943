@@ -5,49 +5,30 @@
 {% block content %}
 
 
-<ul class="list-group list-group-flush">
-    <li class="list-group-item" > 
+{% if posts %}
+    <ul class="list-group list-group-flush">
+      {% for post_key, post in posts %}
+      <li class="list-group-item" > 
         <div class="media-body">
             <div class = "post-title">
-                <p class="user-name text-info">User's name</p>
-                <p class="post-text text-info">Title</p>
+                <p class="user-name text-info">{{ post.userid}}</p>
+                <p class="post-text text-info">{{post.title}}</p>
             </div>
             
-            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
+            <img src="{{ url_for('static',filename='') }}{{post.photo}}" class="rounded border border-info rounded" alt="{{ url_for('static', filename='') }}{{post.photo}}" > 
             <div class="like" >
                 <button type="button " class="btn btn-outline-info" > &hearts; </button>
                 <button type="button" class="btn btn-outline-info"  > Like number </button>
+                <button type="button"  onclick="window.location.href='{{ url_for('patigram_custom_page', post_key=post_key) }}';"  class="btn btn-outline-info float-right" > See Detail</button>>
             </div>      
-        </div>    
-    </li>    
-    <li class="list-group-item" > 
-        <div class="media-body">
-            <div class = "post-title">
-                <p class="user-name text-info">User's name</p>
-                <p class="post-text text-info">Title</p>
-            </div>
-            
-            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
-            <div class="like" >
-                <button type="button " class="btn btn-outline-info" > &hearts; </button>
-                <button type="button" class="btn btn-outline-info"  > Like number </button>
-            </div>      
-        </div>    
-    </li>
-    <li class="list-group-item" > 
-        <div class="media-body">
-            <div class = "post-title">
-                <p class="user-name text-info">User's name</p>
-                <p class="post-text text-info">Title</p>
-            </div>
-            
-            <img src="{{ url_for('static', filename='saziskom.jpg') }}" class="rounded" alt="askım" > 
-            <div class="like" >
-                <button type="button " class="btn btn-outline-info" > &hearts; </button>
-                <button type="button" class="btn btn-outline-info"  > Like number </button>
-            </div>      
-        </div>    
-    </li>
-  </ul>
+        </div>  
+     </li> 
+     
+  
+     
+      {% endfor %}
+    </ul>
+{% endif %}
+
   <a href="https://www.sciencealert.com/here-s-why-cats-have-such-weird-eyes">Background image's website </a>
 {% endblock %}

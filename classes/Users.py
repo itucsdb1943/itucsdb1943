@@ -1,24 +1,26 @@
 import psycopg2 as dbapi2
-
+from flask import current_app
+from flask_login import UserMixin
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
 
-class Users():
-    def __init__(self):
-        self.id = 0
-        self.name = ""
-        self.surname = ""
-        self.email = ""
+class Users(UserMixin):
+    def __init__(self,id,name,surname,username,isVet,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime):
+        self.id = id
+        self.name = name
+        self.surname = surname
+        self.email = username
         self.isVet = False
         self.photoURL = ""
-        self.password = ""
-        self.isLogin = False
-        self.facebookLink = ""
-        self.twitterLink = ""
-        self.youtubeLink = ""
-        self.instagramLink = ""
-        self.websiteLink = ""
-        self.registerTime = ""
+        self.password = password
+        self.isLogin = True
+        self.facebookLink = facebookLink
+        self.twitterLink = twitterLink
+        self.youtubeLink = youtubeLink
+        self.instagramLink = instagramLink
+        self.websiteLink = websiteLink
+        self.registerTime = registerTime
+        self.isAdmin = False
     
     def createUser(self,name,surname,email,photoURL,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime,isVet):
         self.name = name
@@ -43,7 +45,23 @@ class Users():
             cursor.execute(statement)
             print(cursor.fetchone())
         
-
+    
         
+def get_user(user_id):
+    with dbapi2.connect(url) as connection:
+        cursor = connection.cursor()
+        statement = """SELECT PASSWORD FROM USERS WHERE EMAIL = '{0}' """.format(user_id)
+        cursor.execute(statement)
+        db = cursor.fetchone()
+        if db is not None:
+            password = db[0]
+            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(user_id)
+            cursor.execute(statement)
+            db2 = cursor.fetchone()
+            user = Users(db2[0],db2[1],db2[2],db2[3],db2[4],password,db2[5],db2[6],db2[7],db2[8],db2[9],"12.12.12")
+            return user
+        else:
+            return None
+
 
 
