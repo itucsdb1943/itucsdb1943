@@ -1,9 +1,13 @@
 from classes.post import Post
 from classes.foundation import Foundation
 from classes.blog import Blog
+import psycopg2 as dbapi2
+
+
 
 class Database:
-    def __init__(self):
+    def __init__(self, url):
+        self.url = url
         self.posts = {}
         self.last_post_key = 0
         self.foundations = {}
@@ -12,27 +16,52 @@ class Database:
         self.last_blog_key = 0
 		
     def add_post(self, post):
-        self.last_post_key += 1
-        self.posts[self.last_post_key] = post
-        return self.last_post_key
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            if post.posttag is None and post.description is None:
+                 query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, TITLE  )  VALUES ('{0}','{1}','{2}','{3}' );""".format(post.userid,post.postdate,post.photo, post.title)
+            elif post.posttag is None:
+                query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, DESCRIPTION, TITLE )  VALUES ('{0}','{1}','{2}','{3}', '{4}' );""".format(post.userid,post.postdate,post.photo, post.description, post.title)
+            elif post.description is None:
+                 query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, TITLE, POSTTAG )  VALUES ('{0}','{1}','{2}','{3}', '{4}' );""".format(post.userid,post.postdate,post.photo,  post.title, post.posttag)
+            else:
+                 query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, DESCRIPTION, TITLE, POSTTAG )  VALUES ('{0}','{1}','{2}','{3}', '{4}', '{5}' );""".format(post.userid,post.postdate,post.photo, post.description, post.title, post.posttag)
+            cursor.execute(query)
+            connection.commit()
+            statement = """ SELECT POSTID FROM POST WHERE ( USERID = %s) AND (PHOTOURL = %s) AND (TITLE = %s) AND (POSTDATE = %s) """
+            cursor.execute(statement, (post.userid, post.photo, post.title, post.postdate))
+            obj = cursor.fetchone()
+            post_key = obj[0]
+        # self.last_post_key += 1
+        # self.posts[self.last_post_key] = post
+        return post_key
    
     def delete_post(self,post_key):
-        if post_key in self.posts:
-            del self.posts[post_key]
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """DELETE FROM POST WHERE POSTID = '{0}' """.format(post_key)
+            cursor.execute(query)
+            connection.commit()
+
     
     def get_post(self,post_key):
-        if post_key in self.posts:
-            post_ = self.posts.get(post_key)
-            post = Post(post_.postid, post_.userid, post_.postdate, post_.photo, post_.title, description = post_.description, posttag = post_.posttag)
-            return post
-        else:
+            with dbapi2.connect(self.url) as connection:
+                cursor = connection.cursor()
+                query = """ SELECT * FROM POST WHERE POSTID = '{0}' """.format(post_key)
+                cursor.execute(query)
+                postid,userid,postdate,photourl,description,title,posttag = cursor.fetchone()
+                post = Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)            
+                return post
             return None
 
     def get_posts(self):
         posts = []
-        for post_key,post_ in self.posts.items():
-            post = Post(post_.postid, post_.userid, post_.postdate, post_.photo, post_.title, description = post_.description, posttag = post_.posttag)
-            posts.append((post_key, post))
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT * FROM POST ORDER BY POSTDATE"""
+            cursor.execute(query)
+            for postid,userid,postdate,photourl,description,title,posttag in cursor:
+                posts.append((postid , Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)))
         return posts
 	
     def add_foundation(self, foundation):

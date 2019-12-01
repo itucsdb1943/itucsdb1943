@@ -59,11 +59,13 @@ class Users(UserMixin):
 def get_user(id):
     with dbapi2.connect(url) as connection:
         cursor = connection.cursor()
-        statement = """SELECT PASSWORD FROM USERS WHERE EMAIL = '{0}' """.format(id)        cursor.execute(statement)
+        statement = """SELECT PASSWORD FROM USERS WHERE EMAIL = '{0}' """.format(id)        
+        cursor.execute(statement)
         db = cursor.fetchone()
         if db is not None:
             password = db[0]
-            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(id)            cursor.execute(statement)
+            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(id)            
+            cursor.execute(statement)
             db2 = cursor.fetchone()
             user = Users(db2[0],db2[1],db2[2],db2[3],db2[4],password,db2[5],db2[6],db2[7],db2[8],db2[9],"12.12.12")
             return user

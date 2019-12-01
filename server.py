@@ -47,7 +47,7 @@ def load_user(id):
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
 
-db = Database()
+db = Database(url)
 app.config["db"] = db
 
 @app.route("/")
@@ -100,7 +100,7 @@ def patigram_custom_page(post_key):
     db = current_app.config["db"]
     post = db.get_post(post_key)
     if post is None:
-        abort(404)
+        abort(404) #This should be defined
     return render_template("patigram/patigram_custom.html", post=post)
 
 @app.route("/patigram")
@@ -121,12 +121,9 @@ def patigram_add_page():
         return render_template("patigram/patigramAdd.html")
     else:
         errors = {}
-        # check if the post request has the file part
-        #if 'file' not in request.form:
-         #  flash('No file part')
+
         file = request.files["image"]
-        # if user does not select file, browser also
-        # submit an empty part without filename
+
         if file.filename == '':
             errors["file"] = "An image is necessary for patigram post, please give one."
             return  render_template("patigram/patigramAdd.html", errors=errors)
@@ -141,14 +138,15 @@ def patigram_add_page():
         form_title = request.form['title']
 
         form_description = request.form["description"]
-        if request.form["cat"]:
-            form_tag = "cat"
-        elif request.form["dog"]:
-            form_tag = "dog"
-        elif request.form["bird"]:
-            form_tag = "bird"
-        else:
-            form_tag = "other"
+        form_tag = request.form["tag"]
+        # if request.form["cat"] is not None:
+        #     form_tag = "cat"
+        # elif request.form["dog"]:
+        #     form_tag = "dog"
+        # elif request.form["bird"]:
+        #     form_tag = "bird"
+        # else:
+        #     form_tag = "other"
 
         date_time = now.strftime("%d/%m/%y")
         user_id = 1
