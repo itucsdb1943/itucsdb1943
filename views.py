@@ -2,6 +2,7 @@ from flask import Blueprint, render_template , redirect , current_app,url_for
 from flask import request,flash,session,abort
 from datetime import datetime as dt
 from flask_login import LoginManager,login_user,login_required,current_user
+
 from flask_login import logout_user
 from passlib.apps import custom_app_context as pwd_context
 import psycopg2 as dbapi2
@@ -57,8 +58,10 @@ def login_page():
         user = get_user(username)
         if user is not None:
             if hasher.verify(password, user.password):
-                login_user(user)
+                login_user(user,remember=True,force=True)
+                print(current_user)
                 print("you logged")
+                session['logged_in'] = True
                 flash("You have logged in.")
                 next_page = request.args.get("next", url_for("home_page"))
                 return redirect(next_page)

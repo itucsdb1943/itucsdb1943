@@ -1,9 +1,17 @@
 
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request,session
 import psycopg2 as dbapi2
 from flask import current_app
 from views import site
-from flask_login import LoginManager,login_required
+from flask_login import LoginManager,login_required,current_user
+from classes.post import *
+from classes.Database import Database
+from flask_login import logout_user
+from passlib.apps import custom_app_context as pwd_context
+import psycopg2 as dbapi2
+from passlib.hash import pbkdf2_sha256 as hasher
+from classes.Users import *
+from classes.forms import *
 
 
 from datetime import datetime
@@ -19,14 +27,11 @@ import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
 
-from classes.post import *
-from classes.Users import *
-from classes.Database import Database
-
 lm = LoginManager()
+
 @lm.user_loader
-def load_user(user_id):
-    return get_user(user_id)
+def load_user(id):
+    return get_user(id)
 
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
@@ -38,6 +43,7 @@ app.config["db"] = db
 
 @app.route("/")
 def home_page():
+    print(current_user)
     return render_template("home.html")
 
 @app.route("/post")
@@ -126,7 +132,6 @@ if __name__ == "__main__":
     app.run(debug = True)
     up.uses_netloc.append("postgres")
     url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
- 
     conn = psycopg2.connect(database=url.path[1:],
     user=url.username,
     password=url.password,

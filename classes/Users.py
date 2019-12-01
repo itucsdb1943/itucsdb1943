@@ -21,7 +21,7 @@ class Users(UserMixin):
         self.websiteLink = websiteLink
         self.registerTime = registerTime
         self.isAdmin = False
-    
+       
     def createUser(self,name,surname,email,photoURL,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime,isVet):
         self.name = name
         self.surname = surname
@@ -44,24 +44,31 @@ class Users(UserMixin):
             statement = """SELECT * FROM POST """
             cursor.execute(statement)
             print(cursor.fetchone())
-        
+    @property
+    def is_authenticated(self):
+        return True 
+
+    @ property
+    def is_anonymous(self):
+        return False
     
+    @property
+    def is_active(self):
+        return True
         
-def get_user(user_id):
+def get_user(id):
     with dbapi2.connect(url) as connection:
         cursor = connection.cursor()
-        statement = """SELECT PASSWORD FROM USERS WHERE EMAIL = '{0}' """.format(user_id)
+        statement = """SELECT PASSWORD FROM USERS WHERE EMAIL = '{0}' """.format(id)
         cursor.execute(statement)
         db = cursor.fetchone()
         if db is not None:
             password = db[0]
-            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(user_id)
+            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(id)
             cursor.execute(statement)
             db2 = cursor.fetchone()
             user = Users(db2[0],db2[1],db2[2],db2[3],db2[4],password,db2[5],db2[6],db2[7],db2[8],db2[9],"12.12.12")
             return user
         else:
             return None
-
-
 
