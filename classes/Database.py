@@ -1,4 +1,5 @@
 from classes.post import Post
+from classes.comment import Comment
 from classes.foundation import Foundation
 from classes.blog import Blog
 import psycopg2 as dbapi2
@@ -28,7 +29,7 @@ class Database:
                  query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, DESCRIPTION, TITLE, POSTTAG )  VALUES ('{0}','{1}','{2}','{3}', '{4}', '{5}' );""".format(post.userid,post.postdate,post.photo, post.description, post.title, post.posttag)
             cursor.execute(query)
             connection.commit()
-            statement = """ SELECT POSTID FROM POST WHERE ( USERID = %s) AND (PHOTOURL = %s) AND (TITLE = %s) AND (POSTDATE = %s) """
+            statement = """ SELECT POSTID FROM POST WHERE ( USERID = %d) AND (PHOTOURL = %s) AND (TITLE = %s) AND (POSTDATE = %s) """
             cursor.execute(statement, (post.userid, post.photo, post.title, post.postdate))
             obj = cursor.fetchone()
             post_key = obj[0]
@@ -63,7 +64,25 @@ class Database:
             for postid,userid,postdate,photourl,description,title,posttag in cursor:
                 posts.append((postid , Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)))
         return posts
-	
+
+    def add_comment(self,Comment):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%d, %d, %s, %s, %s);"""
+            cursor.execute(statement, (Comment.postid, Comment.userid, Comment.date, Comment.comment, Comment.posttype))
+
+    def get_comments(self, posttype, postid):
+        comments = []
+        with dbapi2.connect(self.url) as connection:
+            cuursor = connection.cursor()
+            statement = """SELECT USERS.NAME, USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
+                                ON (COMMENT.USERID = USERS.USERID)
+                            WHERE (POSTTYPE = %d) AND (POSTID = %d)
+                            ORDER BY COMMENTID DESC"""
+            cursor.execute(statement,(posttype,postid))
+            for name, surname, comment in cursor:
+                comments.append({"name": name, "surname": surname, "comment": comment}) #Dictionary tamamlancak sonra customda yazdırcan
+        return comments
     def add_foundation(self, foundation):
         self.last_foundation_key += 1
         self.movies[self._last_foundation_key] = foundation

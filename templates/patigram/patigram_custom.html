@@ -19,7 +19,14 @@
             </div> 
             <div >
                 <p class="text-info ">{{ post.description}}</p>  
-            </div>>   
+            </div>
+            {%if Comments}
+                <ul class="list-group list-group-flush">
+                    {%for comment in comments}
+                        <li class="list-group-item text-info">@{{comment.}}</li>
+                    {%endfor}
+                </ul>   
+            {%endif}
         </div>  
     </li> 
  </ul>

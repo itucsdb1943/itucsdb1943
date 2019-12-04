@@ -20,7 +20,16 @@
                 <button type="button " class="btn btn-outline-info" > &hearts; </button>
                 <button type="button" class="btn btn-outline-info"  > Like number </button>
                 <button type="button"  onclick="window.location.href='{{ url_for('patigram_custom_page', post_key=post_key) }}';"  class="btn btn-outline-info float-right" > See Detail</button>>
-            </div>      
+            </div> 
+            
+            <form class="form" action="" method="post" name="comment_add">
+                <div class="form-group ">
+                  
+                    <input class="form-control "  name="comment" id="comment" rows="1" placeholder="add comment"></textarea>
+                    <button type="submit" class="btn btn-outline-info float-right" > Add </button>
+                </div>
+            </form>
+               
         </div>  
      </li> 
      
