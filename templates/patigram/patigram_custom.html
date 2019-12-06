@@ -4,8 +4,8 @@
 {% block title %} Home Page {%endblock %}
 {% block content %}
 
-<ul class="list-group list-group-flush">
-    <li class="list-group-item" > 
+<ul class="list-group list-group-flush rounded">
+    <li class="list-group-item" id="main_list" > 
         <div class="media-body">
             <div class = "post-title">
                 <p class="user-name text-info">{{ post.userid}}</p>
@@ -17,16 +17,20 @@
                 <button type="button " class="btn btn-outline-info" > &hearts; </button>
                 <button type="button" class="btn btn-outline-info"  > Like number </button>
             </div> 
-            <div >
-                <p class="text-info ">{{ post.description}}</p>  
-            </div>
-            {%if Comments}
-                <ul class="list-group list-group-flush">
-                    {%for comment in comments}
-                        <li class="list-group-item text-info">@{{comment.}}</li>
-                    {%endfor}
+            {%if post.description is not none %}
+                <div >
+                    <p class="text-info ">{{ post.description}}</p>  
+                </div>
+            {%endif%}
+            {%if comments %}
+                <ul class="list-group list-group-flush" id="comments" >
+                    {%for comment in comments %}                    
+                        <li  class="list-group-item text-info" id= "comment_element">
+                                @{{comment["name"]}} {{ comment["surname"]}}: {{comment["comment"]}} 
+                        </li>
+                    {%endfor %}
                 </ul>   
-            {%endif}
+            {%endif%}
         </div>  
     </li> 
  </ul>

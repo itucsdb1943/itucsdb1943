@@ -36,7 +36,25 @@ img{
     float: left;
 }
 
-.list-group-item{
+#main_list{
     background:url('cateyes.jpg') no-repeat  center center  #5bc0de;
     background-size: cover;
+}
+
+#main_list_two{
+    background:url('cateyes.jpg') no-repeat  center center  #5bc0de;
+    background-size: cover;
+}
+
+#main_list_three{
+    background:url('cateyes.jpg') no-repeat  center center  #5bc0de;
+    background-size: cover;
+}
+#comments{
+    overflow-y: scroll;
+    max-height: 140px;
+}
+
+#comment_element{
+    background-color: rgb(217, 215, 250);
 }

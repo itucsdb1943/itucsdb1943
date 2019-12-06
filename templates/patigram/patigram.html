@@ -8,14 +8,14 @@
 {% if posts %}
     <ul class="list-group list-group-flush">
       {% for post_key, post in posts %}
-      <li class="list-group-item" > 
+      <li class="list-group-item" id="main_list_two"> 
         <div class="media-body">
             <div class = "post-title">
                 <p class="user-name text-info">{{ post.userid}}</p>
                 <p class="post-text text-info">{{post.title}}</p>
             </div>
             
-            <img src="{{ url_for('static',filename='patigram/') }}{{post.photo}}" class="rounded border border-info rounded" alt="{{ url_for('static', filename='') }}{{post.photo}}" > 
+            <img src="{{ url_for('static',filename='patigram/') }}{{post.photo}}" class="rounded border border-info rounded" alt="{{ url_for('static', filename='') }}{{post.photo}}"> 
             <div class="like" >
                 <button type="button " class="btn btn-outline-info" > &hearts; </button>
                 <button type="button" class="btn btn-outline-info"  > Like number </button>
@@ -26,7 +26,7 @@
                 <div class="form-group ">
                   
                     <input class="form-control "  name="comment" id="comment" rows="1" placeholder="add comment"></textarea>
-                    <button type="submit" class="btn btn-outline-info float-right" > Add </button>
+                    <button type="submit" class="btn btn-outline-info float-right" name="add" value= {{post.postid}}> Add </button>
                 </div>
             </form>
                

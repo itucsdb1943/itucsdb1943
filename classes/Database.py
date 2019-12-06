@@ -68,20 +68,20 @@ class Database:
     def add_comment(self,Comment):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%d, %d, %s, %s, %s);"""
+            statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%s, %s, %s, %s, %s);"""
             cursor.execute(statement, (Comment.postid, Comment.userid, Comment.date, Comment.comment, Comment.posttype))
 
     def get_comments(self, posttype, postid):
         comments = []
         with dbapi2.connect(self.url) as connection:
-            cuursor = connection.cursor()
+            cursor = connection.cursor()
             statement = """SELECT USERS.NAME, USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
                                 ON (COMMENT.USERID = USERS.USERID)
-                            WHERE (POSTTYPE = %d) AND (POSTID = %d)
+                            WHERE (POSTTYPE = %s) AND (POSTID = %s)
                             ORDER BY COMMENTID DESC"""
             cursor.execute(statement,(posttype,postid))
             for name, surname, comment in cursor:
-                comments.append({"name": name, "surname": surname, "comment": comment}) #Dictionary tamamlancak sonra customda yazdırcan
+                comments.append({"name": name, "surname": surname, "comment": comment}) 
         return comments
     def add_foundation(self, foundation):
         self.last_foundation_key += 1

@@ -16,7 +16,7 @@ import psycopg2 as dbapi2
 from passlib.hash import pbkdf2_sha256 as hasher
 from classes.Users import *
 from classes.forms import *
-
+from classes.comment import *
 
 from datetime import datetime
 now = datetime.now()
@@ -99,15 +99,30 @@ def forum_add_page():
 def patigram_custom_page(post_key):
     db = current_app.config["db"]
     post = db.get_post(post_key)
+    patigram_post_type = 0
+    comments = db.get_comments(patigram_post_type,post_key)
     if post is None:
         abort(404) #This should be defined
-    return render_template("patigram/patigram_custom.html", post=post)
+    return render_template("patigram/patigram_custom.html", post=post, comments = comments)
 
-@app.route("/patigram")
+@app.route("/patigram", methods=["GET", "POST"])
 def patigram_page():
-    db = current_app.config["db"]
-    posts = db.get_posts()
-    return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
+    if request.method == "GET":
+        db = current_app.config["db"]
+        posts = db.get_posts()
+        return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
+    else:
+        form_comment = request.form["comment"]
+        userid = 1 # This should be handled
+        commentid = 1 # Just for errors
+        form_postid = request.form["add"]    
+        date_time = now.strftime("%d/%m/%y/%H/%M/%S")
+        post_type = 0
+        db = current_app.config["db"]
+        db.add_comment(Comment(commentid, form_postid, userid, date_time, form_comment, post_type))
+        return redirect(url_for("patigram_custom_page", post_key=form_postid))
+
+
 
 # Checking extensions of loaded file
 def allowed_file(filename):
@@ -148,9 +163,9 @@ def patigram_add_page():
         # else:
         #     form_tag = "other"
 
-        date_time = now.strftime("%d/%m/%y")
+        date_time = now.strftime("%d/%m/%y/%H/%M/%S")
         user_id = 1
-        post_id = 3
+        post_id = 3 # I don't use it, just for errors
         post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, posttag=form_tag if form_tag else None)
         db = current_app.config["db"]
         post_key = db.add_post(post)
