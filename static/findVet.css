@@ -1,0 +1,26 @@
+h5 {
+  display: inline-block;
+  padding-left: 30px;
+}
+h5:after {
+  content: '';
+  background: black;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 10px;
+  border-radius: 50% 50% 50% 0%;
+  transform: rotate(-50deg);
+}
+h5:before {
+  content: '';
+  background: white;
+  width: 8px;
+  position: absolute;
+  height: 8px;
+  left: 16px;
+  border-radius: 50%;
+  top: 33px;
+  z-index: 1;
+
+}
