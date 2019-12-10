@@ -165,7 +165,7 @@ class Database:
             cursor.execute(statement,(vetid,))
             connection.commit()
             vetid, address, district, servicerate, pricerate, telephone, overallscore, vetname, votenum, cityname = cursor.fetchone()
-            print("oddddd %s",vetname)
+            print("oddddd %s",cityname)
             vet = Veteriner(vetid, address, district, servicerate, pricerate, telephone, overallscore, vetname, votenum, cityname)
             print(vet.vetName)
             return vet
