@@ -4,9 +4,12 @@ from classes.foundation import Foundation
 from classes.blog import Blog
 from classes.notices import Notice
 import psycopg2 as dbapi2
+from classes.veteriner import Veteriner
+from classes.rate import *
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 
 class Database:
     def __init__(self, url):
@@ -31,7 +34,7 @@ class Database:
                  query = """INSERT INTO Post(USERID, POSTDATE, PHOTOURL, DESCRIPTION, TITLE, POSTTAG )  VALUES ('{0}','{1}','{2}','{3}', '{4}', '{5}' );""".format(post.userid,post.postdate,post.photo, post.description, post.title, post.posttag)
             cursor.execute(query)
             connection.commit()
-            statement = """ SELECT POSTID FROM POST WHERE ( USERID = %d) AND (PHOTOURL = %s) AND (TITLE = %s) AND (POSTDATE = %s) """
+            statement = """ SELECT POSTID FROM POST WHERE ( USERID = %s) AND (PHOTOURL = %s) AND (TITLE = %s) AND (POSTDATE = %s) """
             cursor.execute(statement, (post.userid, post.photo, post.title, post.postdate))
             obj = cursor.fetchone()
             post_key = obj[0]
@@ -87,20 +90,21 @@ class Database:
     def add_comment(self,Comment):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%d, %d, %s, %s, %s);"""
+            statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%s, %s, %s, %s, %s);"""
             cursor.execute(statement, (Comment.postid, Comment.userid, Comment.date, Comment.comment, Comment.posttype))
 
     def get_comments(self, posttype, postid):
         comments = []
         with dbapi2.connect(self.url) as connection:
-            cuursor = connection.cursor()
+            cursor = connection.cursor()
             statement = """SELECT USERS.NAME, USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
                                 ON (COMMENT.USERID = USERS.USERID)
-                            WHERE (POSTTYPE = %d) AND (POSTID = %d)
+                            WHERE (POSTTYPE = %s) AND (POSTID = %s)
                             ORDER BY COMMENTID DESC"""
             cursor.execute(statement,(posttype,postid))
+            connection.commit()
             for name, surname, comment in cursor:
-                comments.append({"name": name, "surname": surname, "comment": comment})
+                comments.append({"name": name, "surname": surname, "comment": comment}) 
         return comments
     def add_foundation(self, foundation):
         self.last_foundation_key += 1
@@ -147,3 +151,59 @@ class Database:
             blog_ = Blog(blog.blogID, blog.userID, blog.tag, blog.title, blog.text, blog.likeNum, blog.dislikeNum, blog.postedDate)
             blogs.append((blog_key, blog_))
         return blogs
+
+    def create_initial_vets(self):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Çeliktepe mah. Münir Kemal cd. no:38', 'Kağıthane', '02425676755', 'Çeliktepe Pati Veteriner', 34 );
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Cikcilli mah. Gümüşler cd. no:52', 'Alanya', '02125152610', 'Cikcilli Veteriner', 7);
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Gürsel mah. Komşu cd. no:95','Kağıthane', '02127656578', 'Patisever Veteriner', 34);
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Yıldız mah. Abdülhamit cd. no:39', 'Beşiktaş','02128979908', 'Yıldız Veteriner', 34);
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Saray mah. Mehmet Çavuş sk. no:10','Alanya', '024253979828','Alaiye Veteriner', 7);"""
+            cursor.execute(statement)
+            connection.commit()
+    
+    def get_vets(self):
+        with dbapi2.connect(self.url) as connection:
+            vets = []
+            cursor = connection.cursor()
+            statement = """ SELECT VETID,DISTRICT,VETNAME, OVERALLSCORE, VOTENUM, CITY.CITYNAME FROM VET LEFT JOIN CITY
+                            ON (VET.CITYID = CITY.CITYID) """
+            
+            cursor.execute(statement)
+            connection.commit()
+            for vetid,district, vetname, score, votenum, cityname  in cursor:
+                vets.append({ "vetid":vetid, "vetname":vetname, "district": district, "cityname":cityname,"score": score, "votenum":votenum})
+        return vets
+
+    def get_vet(self, vetid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ SELECT VETID,ADDRESS,DISTRICT,SERVICERATE, PRICERATE, TELEPHONE, OVERALLSCORE, VETNAME, VOTENUM, CITYNAME
+                            FROM VET LEFT JOIN CITY
+                            ON(VET.CITYID = CITY.CITYID)
+                            WHERE (VETID = %s)"""
+            cursor.execute(statement,(vetid,))
+            connection.commit()
+            vetid, address, district, servicerate, pricerate, telephone, overallscore, vetname, votenum, cityname = cursor.fetchone()
+            print("oddddd %s",cityname)
+            vet = Veteriner(vetid, address, district, servicerate, pricerate, telephone, overallscore, vetname, votenum, cityname)
+            print(vet.vetName)
+            return vet
+        return None
+
+    def add_rate(self, rate):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """INSERT INTO Rating(USERID, VETID, OVERALLSCORE, PRICERATE, SERVICERATE, COMMENT, DATE, TITLE)
+                        VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"""
+            cursor.execute(statement,(rate.userid, rate.vetid, rate.overallScore, rate.priceRate, rate.serviceRate, rate.comment, rate.date, rate.title))
+            #Scores must be updated
+            statement =    """ UPDATE Vet
+                                SET OVERALLSCORE = ((OVERALLSCORE * VOTENUM) + (%s)) / (VOTENUM+1),
+                                    PRICERATE = ((PRICERATE * VOTENUM) + (%s)) / (VOTENUM+1),
+                                    SERVICERATE = ((SERVICERATE * VOTENUM) + (%s)) / (VOTENUM+1),
+                                    VOTENUM = VOTENUM + 1
+                                WHERE (VETID = %s);"""
+            cursor.execute(statement, (rate.overallScore, rate.priceRate, rate.serviceRate, rate.vetid))
+

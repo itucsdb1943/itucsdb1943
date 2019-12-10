@@ -16,7 +16,8 @@ import psycopg2 as dbapi2
 from passlib.hash import pbkdf2_sha256 as hasher
 from classes.Users import *
 from classes.forms import *
-
+from classes.comment import *
+from classes.rate import *
 
 from datetime import datetime
 now = datetime.now()
@@ -78,8 +79,51 @@ def blog_add_page():
 
 @app.route("/findvet")
 def findVet_page():
-    return "veteriner finding page"
+    db = current_app.config["db"]
+    vets = db.get_vets()
+    #db.create_initial_vets()
+    for vet in vets:
+        score = vet["score"]
+        score = score * 20
+        vet["score"] = score
+    return render_template("findVet/findVet.html", vets=vets)
 
+@app.route("/findVet/<int:vet_key>")
+def vet_custom_page(vet_key):
+    db = current_app.config["db"]
+    vet = db.get_vet(vet_key)
+    vet.overallScore = int(vet.overallScore)
+    vet.priceRate = int(vet.priceRate)
+    vet.serviceRate = int(vet.serviceRate)
+    # print(vet.vetName)
+    return render_template("findVet/vet_custom_page.html", vet=vet)
+
+@app.route("/findVet/evaluation/<int:vet_key>",methods=["GET","POST"])
+def vet_evaluation_page(vet_key):
+    db = current_app.config["db"]
+    if request.method == "GET":
+        vet = db.get_vet(vet_key)
+        vet.overallScore = int(vet.overallScore)
+        vet.priceRate = int(vet.priceRate)
+        vet.serviceRate = int(vet.serviceRate)
+        return render_template("findVet/vet_evaluation_page.html", vet=vet)
+    else:
+        form_title = request.form["title"]
+        form_comment = request.form["comment"]
+        form_overall = request.form["overallScore"]
+        form_price = request.form["priceRate"]
+        form_service = request.form["serviceRate"]
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
+        vetid = vet_key 
+        userid = 1 # Should be handled
+        rateid = 1 # Just for errors, not real value. Sql will give real rateid
+        new_rate = Rate(rateid, userid, vetid, form_overall, form_price, form_service, form_comment, form_title, date_time)
+        db.add_rate(new_rate)
+        vet = db.get_vet(vet_key)
+        vet.overallScore = int(vet.overallScore)
+        vet.priceRate = int(vet.priceRate)
+        vet.serviceRate = int(vet.serviceRate)
+        return render_template("findVet/vet_custom_page.html", vet=vet)
 @app.route("/foundation")
 def foundation_page():
     return render_template("foundation/foundation.html")
@@ -112,15 +156,30 @@ def forum_add_page():
 def patigram_custom_page(post_key):
     db = current_app.config["db"]
     post = db.get_post(post_key)
+    patigram_post_type = 0
+    comments = db.get_comments(patigram_post_type,post_key)
     if post is None:
         abort(404) #This should be defined
-    return render_template("patigram/patigram_custom.html", post=post)
+    return render_template("patigram/patigram_custom.html", post=post, comments = comments)
 
-@app.route("/patigram")
+@app.route("/patigram", methods=["GET", "POST"])
 def patigram_page():
-    db = current_app.config["db"]
-    posts = db.get_posts()
-    return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
+    if request.method == "GET":
+        db = current_app.config["db"]
+        posts = db.get_posts()
+        return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
+    else:
+        form_comment = request.form["comment"]
+        userid = 1 # This should be handled
+        commentid = 1 # Just for errors
+        form_postid = request.form["add"]    
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
+        post_type = 0
+        db = current_app.config["db"]
+        db.add_comment(Comment(commentid, form_postid, userid, date_time, form_comment, post_type))
+        return redirect(url_for("patigram_custom_page", post_key=form_postid))
+
+
 
 # Checking extensions of loaded file
 def allowed_file(filename):
@@ -161,9 +220,9 @@ def patigram_add_page():
         # else:
         #     form_tag = "other"
 
-        date_time = now.strftime("%d/%m/%y")
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
         user_id = 1
-        post_id = 3
+        post_id = 3 # I don't use it, just for errors
         post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, posttag=form_tag if form_tag else None)
         db = current_app.config["db"]
         post_key = db.add_post(post)

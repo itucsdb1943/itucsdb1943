@@ -1,0 +1,70 @@
+{% extends "navbar.html" %}
+{% block title %} Find Veteriner{%endblock %}
+{% block csslinks %}  <link rel="stylesheet" href="{{ url_for('static', filename='findVet.css') }}"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    .checked {
+        color: orange;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+{%if vet%}
+    {% set vet_id = vet.vetid%}
+    <div class="card text-center">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link text-info active" href="{{ url_for('vet_custom_page', vet_key=vet_id) }}">Info</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" href="{{url_for('vet_evaluation_page', vet_key=vet_id)}}">Rating </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body ">
+            <h1 class="card-title text-info">{{vet.vetName}}</h1>
+            <div class="row mt-4 ">
+                <div class="col-sm mb-3">
+                    <h4>Overall Score</h4>
+                    {%for i in range(vet.overallScore)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.overallScore)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.overallScore}}</h4>
+                </div>
+                <div class="col-sm">
+                    <h4>Service Score</h4>
+                    {%for i in range(vet.serviceRate)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.serviceRate)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.serviceRate}}</h4>
+                </div>
+                <div class="col-sm">
+                    <h4>Price Score</h4>
+                    {%for i in range(vet.priceRate)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.priceRate)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.priceRate}}</h4>
+                </div>       
+            </div>
+            <div >
+                <i class="fa fa-map-marker text-info" style="font-size:34px; color:#30AFBF;">{{vet.address}}  {{vet.district}}/{{vet.cityName}}  </i>
+            </div>
+            
+        </div>
+    </div>
+
+
+{%endif%}
+{% endblock %}
