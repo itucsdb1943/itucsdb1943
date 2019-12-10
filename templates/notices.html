@@ -1,0 +1,31 @@
+{% extends "navbar.html" %}
+{% block title %} Notices Page {%endblock %}
+{% block csslinks %}<link rel="stylesheet" href="/static/noti.css"> 
+<style type="text/css"> 
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+        margin-top: 30px;
+}
+
+</style> {% endblock %}
+{% block content %}
+
+
+<div class="text-center"> 
+    <button class="btn btn-primary" type="button" >Kayıp Ilanları</button> 
+    <button class ="btn btn-secondary" type="button" >Sahiplendirme Ilanları</button> 
+</div> 
+{% for noticeid, notice in notices %}
+<div class="card" style="width: 36rem;">
+  <img class="card-img-top" src="../static/cat.jpg" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{notice.description}}</h5>
+    <p class="card-text">Place: {{notice.place}}</p>
+    <p class="card-text">Created: {{notice.date}}</p>
+    <a onclick="window.location.href='{{ url_for('noticeDetail_page', noticeID=noticeid) }}';" class="btn btn-primary">Go Details</a>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
