@@ -47,7 +47,6 @@ def load_user(id):
 
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
-
 db = Database(url)
 app.config["db"] = db
 
@@ -55,6 +54,12 @@ app.config["db"] = db
 def home_page():
     print(current_user)
     return render_template("home.html")
+
+@app.route("/logout")
+def logout_page():
+    session['logged_in'] = False
+    next_page = request.args.get("next", url_for("home_page"))
+    return redirect(next_page)
 
 @app.route("/post")
 def post_page():
@@ -125,7 +130,15 @@ def foundation_page():
 
 @app.route("/notice")
 def notice_page():
-    return render_template("profile.html")
+    db = current_app.config["db"]
+    notices = db.get_notices()    
+    return render_template("notices.html",notices = sorted(notices, reverse=True))
+
+@app.route("/notice/<int:noticeID>")
+def noticeDetail_page(noticeID):
+    db = current_app.config["db"]
+    notice = db.get_notice(noticeID)
+    return render_template("noticeDetail.html",notice=notice) 
 
 @app.route("/notice/add")
 def announcementAdd_page():
@@ -228,6 +241,8 @@ if __name__ == "__main__":
     lm.init_app(app)
     lm.login_view = "login_page"
     app.run(debug = True)
+    session.pop('logged_in',None)
+    #session['logged_in'] = False
     up.uses_netloc.append("postgres")
     url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
     conn = psycopg2.connect(database=url.path[1:],

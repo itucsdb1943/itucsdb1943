@@ -89,13 +89,17 @@ CREATE TABLE Blog (
 CREATE TABLE Notice (
     NOTICEID SERIAL PRIMARY KEY,
     USERID INTEGER REFERENCES Users (USERID),
-    ANIMALTYPE INTEGER NOT NULL,
+    ANIMALTYPE VARCHAR(10),
     AGE INTEGER NOT NULL,
     STRAIN VARCHAR(20),
-    GENDER INTEGER NOT NULL,
+    GENDER VARCHAR(10),
     PHOTOURL VARCHAR(255),
     ISLOST INTEGER NOT NULL,
-    DESCRIPTION VARCHAR(255)
+    DESCRIPTION VARCHAR(255),
+    CONTACT VARCHAR(100),
+    DATE VARCHAR(100),
+    PLACE VARCHAR(80)
+
 )
 
 CREATE TABLE Foundation (
@@ -151,3 +155,9 @@ CREATE TABLE SocialMedia(
 
 
 select userid,name,surname,email,isvet,password,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid
+
+
+create notice:
+INSERT INTO NOTICE (USERID,ANIMALTYPE,AGE,STRAIN,GENDER,PHOTOURL,ISLOST,DESCRIPTION,CONTACT,DATE)
+VALUES ()
+

@@ -7,10 +7,11 @@
 <section id="header" class="jumbotron text-center">
        <h1 class="display-3">PetWorld</h1>
        <p class="lead">All about pets... Share photo, find veteriner, find useful information, ask to veteriner etc.</p>
-       <a href="" class="btn btn-primary">Login</a>
-       {% if current_user.is_authenticated %}
+       {% if session['logged_in'] %}
+       <p class="lead">Welcome</p>
+       {% else %}
+       <a href="" class="btn btn-primary">Login</a>       
        <a href="" class="btn btn-secondary">Register</a>
-       <a href="" class="btn btn-secondary">girdin</a>              
        {% endif %}
 </section>    
 <section id="gallery">

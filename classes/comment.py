@@ -5,4 +5,5 @@ class Comment:
         self.userid = userid
         self.date = date
         self.comment = comment
-        self.posttype = posttype #0 for patigram.        
+        self.posttype = posttype #patigram icin 0 olacak, bu objeyi baska kullanacak olan ne icin hangi degeri alacagini belirtsin!
+       
