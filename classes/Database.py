@@ -2,9 +2,11 @@ from classes.post import Post
 from classes.comment import Comment
 from classes.foundation import Foundation
 from classes.blog import Blog
+from classes.notices import Notice
 import psycopg2 as dbapi2
-
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class Database:
     def __init__(self, url):
@@ -64,6 +66,23 @@ class Database:
             for postid,userid,postdate,photourl,description,title,posttag in cursor:
                 posts.append((postid , Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)))
         return posts
+    def get_notices(self):
+        notices = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """select noticeid,notice.userid,users.name,users.surname,animaltype,age,strain,gender,photourl,islost,description,contact,date,place from notice left join users on users.userid = notice.userid ORDER BY DATE"""
+            cursor.execute(query)
+            for noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place in cursor:
+                notices.append((noticeID,Notice(noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place)))
+        return notices
+    def get_notice(self,noticeID):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """select noticeid,notice.userid,users.name,users.surname,animaltype,age,strain,gender,photourl,islost,description,contact,date,place from notice left join users on users.userid = notice.userid where noticeid = '{0}'""".format(noticeID)
+            cursor.execute(query)
+            noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place = cursor.fetchone()
+            notice = Notice(noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place)
+        return notice
 
     def add_comment(self,Comment):
         with dbapi2.connect(self.url) as connection:
@@ -81,7 +100,7 @@ class Database:
                             ORDER BY COMMENTID DESC"""
             cursor.execute(statement,(posttype,postid))
             for name, surname, comment in cursor:
-                comments.append({"name": name, "surname": surname, "comment": comment}) #Dictionary tamamlancak sonra customda yazdırcan
+                comments.append({"name": name, "surname": surname, "comment": comment})
         return comments
     def add_foundation(self, foundation):
         self.last_foundation_key += 1

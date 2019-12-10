@@ -1,0 +1,89 @@
+{% extends "navbar.html" %}
+{% block title %} Notice {%endblock %}
+{% block csslinks %}<link rel="stylesheet" href="/static/noti.css"> 
+<style type="text/css"> 
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+        margin-top: 30px;
+}
+
+
+</style> {% endblock %}
+{% block content %}
+
+<div class="card" style="width: 36rem;">
+  <img class="card-img-top" src="../static/cat.jpg" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title" style="text-align: center;">Kedimizi Bulamıyoruz</h5>
+    <div style="text-align:left; margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Creator:</b>
+        </div>            
+        <div  class="ml-3" >
+            {{notice.name}} {{notice.surname}}
+        </div>
+    </div>
+
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px;  margin-left:35%;">
+            <b>Animal Type:</b>
+        </div>            
+        <div>
+            {{notice.animalType}}
+        </div>
+    </div>
+
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Age:</b>
+        </div>            
+        <div >
+            {{notice.age}}
+        </div>
+    </div>
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Strain:</b>
+        </div>            
+        <div >
+            {{notice.strain}}
+        </div>
+    </div>
+    <div class="key-val" style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Gender:</b>
+        </div>            
+        <div >
+            {{notice.gender}}
+        </div>
+    </div>
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Contact:</b>
+        </div>            
+        <div >
+            {{notice.contact}}
+        </div>
+    </div>
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Place:</b>
+        </div>            
+        <div >
+            {{notice.place}}
+        </div>
+    </div>     
+    <div style="text-align:left;  margin-bottom: 3%;">       
+        <div class = "key float-left" style="width: 110px; margin-left:35%;">
+            <b>Date:</b>
+        </div>            
+        <div >
+            {{notice.date}}
+        </div>
+    </div>     
+    </div>
+</div>
+
+{% endblock %}
