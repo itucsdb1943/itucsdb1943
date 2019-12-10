@@ -1,15 +1,33 @@
+import os
+from os.path import join, dirname, realpath
+from werkzeug.utils import secure_filename
+from flask import Flask, render_template,request,session
 
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request,session
 import psycopg2 as dbapi2
-from flask import current_app
+from flask import current_app, redirect, Flask,url_for
 from views import site
-from flask_login import LoginManager,login_required
+from flask_login import LoginManager,login_required,current_user
+from classes.post import *
+from classes.Database import Database
+from flask_login import logout_user
+from passlib.apps import custom_app_context as pwd_context
+import psycopg2 as dbapi2
+from passlib.hash import pbkdf2_sha256 as hasher
+from classes.Users import *
+from classes.forms import *
 
 
 from datetime import datetime
-
 now = datetime.now()
-import os
+
+#For uploading photo
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
+ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
+
+
+
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -18,27 +36,29 @@ except ImportError:
 import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
-
-from classes.post import *
-from classes.Users import *
-from classes.Database import Database
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 lm = LoginManager()
+
 @lm.user_loader
-def load_user(user_id):
-    return get_user(user_id)
+def load_user(id):
+    return get_user(id)
 
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
 
-
-db = Database()
-db.add_post(Post( 1, 1, "19.11.2019", "alp.jpeg", "Deneme alp's foto ", description="Cektirdigim bir vesikalik fotografim"))
-db.add_post(Post( 2, 1, "19.11.2019", "saziskom.jpg", "Deneme sazis's foto ", description="Saziye'nin fotografini 1 yil once cekmistim ama artik bana kendini kucaklatmiyor minik siskocuk. Satoktan sonra iyice agresiflesti"))
+db = Database(url)
 app.config["db"] = db
 
 @app.route("/")
 def home_page():
+    print(current_user)
     return render_template("home.html")
+
+@app.route("/logout")
+def logout_page():
+    session['logged_in'] = False
+    next_page = request.args.get("next", url_for("home_page"))
+    return redirect(next_page)
 
 @app.route("/post")
 def post_page():
@@ -66,7 +86,15 @@ def foundation_page():
 
 @app.route("/notice")
 def notice_page():
-    return render_template("profile.html")
+    db = current_app.config["db"]
+    notices = db.get_notices()    
+    return render_template("notices.html",notices = sorted(notices, reverse=True))
+
+@app.route("/notice/<int:noticeID>")
+def noticeDetail_page(noticeID):
+    db = current_app.config["db"]
+    notice = db.get_notice(noticeID)
+    return render_template("noticeDetail.html",notice=notice) 
 
 @app.route("/notice/add")
 def announcementAdd_page():
@@ -85,7 +113,7 @@ def patigram_custom_page(post_key):
     db = current_app.config["db"]
     post = db.get_post(post_key)
     if post is None:
-        abort(404)
+        abort(404) #This should be defined
     return render_template("patigram/patigram_custom.html", post=post)
 
 @app.route("/patigram")
@@ -94,19 +122,49 @@ def patigram_page():
     posts = db.get_posts()
     return render_template("patigram/patigram.html", posts=sorted(posts, reverse=True))
 
+# Checking extensions of loaded file
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route("/patigram/add", methods=["GET","POST"])
 def patigram_add_page():
     if request.method == "GET":
         return render_template("patigram/patigramAdd.html")
     else:
-        form_photo = request.form["photo"]
-        form_title = request.form["title"]
+        errors = {}
+
+        file = request.files["image"]
+
+        if file.filename == '':
+            errors["file"] = "An image is necessary for patigram post, please give one."
+            return  render_template("patigram/patigramAdd.html", errors=errors)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            form_photo = filename
+        form_title =  request.form.get("title", "").strip()
+        if len(form_title) == 0:
+            errors["title"] = "You should give a title to patigram post, please give one."
+            return  render_template("patigram/patigramAdd.html", errors=errors)
+        form_title = request.form['title']
+
         form_description = request.form["description"]
         form_tag = request.form["tag"]
+        # if request.form["cat"] is not None:
+        #     form_tag = "cat"
+        # elif request.form["dog"]:
+        #     form_tag = "dog"
+        # elif request.form["bird"]:
+        #     form_tag = "bird"
+        # else:
+        #     form_tag = "other"
+
         date_time = now.strftime("%d/%m/%y")
         user_id = 1
         post_id = 3
-        post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, tag=form_tag if form_tag else None)
+        post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, posttag=form_tag if form_tag else None)
         db = current_app.config["db"]
         post_key = db.add_post(post)
         return redirect(url_for("patigram_custom_page", post_key=post_key))
@@ -124,9 +182,10 @@ if __name__ == "__main__":
     lm.init_app(app)
     lm.login_view = "login_page"
     app.run(debug = True)
+    session.pop('logged_in',None)
+    #session['logged_in'] = False
     up.uses_netloc.append("postgres")
     url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
- 
     conn = psycopg2.connect(database=url.path[1:],
     user=url.username,
     password=url.password,
