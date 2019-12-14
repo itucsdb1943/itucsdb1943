@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
@@ -18,14 +19,16 @@ from classes.Users import *
 from classes.forms import *
 from classes.comment import *
 from classes.rate import *
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 from datetime import datetime
 now = datetime.now()
 
 #For uploading photo
 UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
 ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
-
+UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
 
 
 
@@ -38,6 +41,7 @@ import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_NOTICE '] = UPLOAD_FOLDER_NOTICE 
 
 lm = LoginManager()
 
@@ -52,6 +56,7 @@ app.config["db"] = db
 
 @app.route("/")
 def home_page():
+    db.get_notifications()
     print(current_user)
     return render_template("home.html")
 
@@ -138,12 +143,39 @@ def notice_page():
 def noticeDetail_page(noticeID):
     db = current_app.config["db"]
     notice = db.get_notice(noticeID)
+    print(notice.photoURL)
     return render_template("noticeDetail.html",notice=notice) 
 
-@app.route("/notice/add")
-def announcementAdd_page():
-    return "announcement add page"
-
+@app.route("/notice/add", methods=['GET','POST'])
+def noticeAdd_page():
+    if request.method == "GET":        
+        return render_template("noticeAdd.html")
+    else:
+        errors = {}
+        form = request.form
+        file = request.files["image"]
+        if file.filename == '':           
+            errors["file"] = "An image is necessary for patigram post, please give one."
+            return  render_template("patigram/patigramAdd.html", errors=errors)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER_NOTICE'], filename))
+            form_photo = filename
+        
+        photoUrl = "../static/" + form_photo
+        title = form['title']
+        animalType = form['animalType']
+        place = form['place']
+        gender = form['gender']
+        strain = form['strain']        
+        age = request.form.get('age')
+        agee = int(age)
+        isLost = request.form['tag']
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
+        contact = form['phone']
+        db.add_notice(title,place,animalType,gender,strain,agee,photoUrl,isLost,contact,date_time,session['user_id'])
+        return render_template("noticeAdd.html")
+ 
 @app.route("/forum")
 def forum_page():
     return "Forum page"
@@ -230,7 +262,8 @@ def patigram_add_page():
 
 @app.route("/notifications")
 def notifications_page():
-    return render_template("notifications.html")
+    notifications = db.get_notifications()
+    return render_template("notifications.html",notifications = notifications)
 
 @app.route("/notification/add")
 def notification_add_page():

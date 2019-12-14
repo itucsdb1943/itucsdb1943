@@ -5,13 +5,13 @@ url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql
 
 
 class Users(UserMixin):
-    def __init__(self,id,name,surname,username,isVet,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime):
+    def __init__(self,id,name,surname,username,isVet,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime,photoURL):
         self.id = id
         self.name = name
         self.surname = surname
         self.email = username
         self.isVet = False
-        self.photoURL = ""
+        self.photoURL = photoURL
         self.password = password
         self.isLogin = True
         self.facebookLink = facebookLink
@@ -64,10 +64,11 @@ def get_user(id):
         db = cursor.fetchone()
         if db is not None:
             password = db[0]
-            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(id)            
+            statement = """select userid,name,surname,email,isvet,facebook,twitter,youtube,instagram,website,registerdate,photo from users left join socialmedia on users.userid = socialmedia.ownerid where email = '{0}'""".format(id)            
             cursor.execute(statement)
             db2 = cursor.fetchone()
-            user = Users(db2[0],db2[1],db2[2],db2[3],db2[4],password,db2[5],db2[6],db2[7],db2[8],db2[9],"12.12.12")
+            print(db2)
+            user = Users(db2[0],db2[1],db2[2],db2[3],db2[4],password,db2[5],db2[6],db2[7],db2[8],db2[9],db2[10],db2[11])
             return user
         else:
             return None

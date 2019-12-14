@@ -19,7 +19,7 @@
 </div> 
 {% for noticeid, notice in notices %}
 <div class="card" style="width: 36rem;">
-  <img class="card-img-top" src="../static/cat.jpg" alt="Card image cap">
+  <img class="card-img-top" src="{{notice.photoURL}}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{notice.description}}</h5>
     <p class="card-text">Place: {{notice.place}}</p>
