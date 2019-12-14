@@ -2,7 +2,8 @@ from flask import Blueprint, render_template , redirect , current_app,url_for
 from flask import request,flash,session,abort
 from datetime import datetime as dt
 from flask_login import LoginManager,login_user,login_required,current_user
-
+from datetime import datetime
+now = datetime.now()
 from flask_login import logout_user
 from passlib.apps import custom_app_context as pwd_context
 import psycopg2 as dbapi2
@@ -23,18 +24,26 @@ def register_page():
         email = form['email']
         password = form['password']
         hashed = hasher.hash(password)
-        print(len(hashed))
         facebook = form['facebook']
         twitter = form['twitter']
         instagram = form['instagram']
         youtube = form['youtube']
         website = form['website']
-        isVet = form['isVet']
+        if form.get('isVet'):
+            isVet = 1
+        else:
+            isVet = 0
+        photoUrl = form['ck2']
+        registerTime = now.strftime("%d/%m/%y %H:%M:%S")
         with dbapi2.connect(url) as connection:
             cursor = connection.cursor()
-            statement = """INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD)
-            VALUES (%s,%s,%s,1,%s); """
-            cursor.execute(statement,(name,surname,email,hashed))
+            try:
+                statement = """INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD,PHOTO,REGISTERDATE)
+                VALUES (%s,%s,%s,%s,%s,%s,%s); """
+                cursor.execute(statement,(name,surname,email,isVet,hashed,photoUrl,registerTime))
+            except:
+                return render_template("register.html",message = "The email address is already used!")
+
         with dbapi2.connect(url) as connection:
             cursor = connection.cursor()
             statement = """ SELECT USERID FROM USERS WHERE EMAIL = '{0}' """.format(email)
@@ -45,7 +54,8 @@ def register_page():
             statement = """ INSERT INTO SOCIALMEDIA(OWNERID,FACEBOOK,TWITTER,INSTAGRAM,YOUTUBE,WEBSITE)
                             VALUES('{0}','{1}','{2}','{3}','{4}','{5}') """.format(userid,facebook,twitter,instagram,youtube,website)
             cursor.execute(statement)        
-        return render_template("register.html")
+        next_page = request.args.get("next", url_for("login_page"))
+        return redirect(next_page)
 
 @site.route("/login", methods=['GET','POST'])
 def login_page():
@@ -62,10 +72,15 @@ def login_page():
                 print(current_user)
                 print("you logged")
                 session['logged_in'] = True
+                session['user_id'] = current_user.id
+                print(session['user_id'])
                 flash("You have logged in.")
                 next_page = request.args.get("next", url_for("home_page"))
                 return redirect(next_page)
             else:
                 print("you cant logged")
                 flash("You cant logged in.")
-                return render_template("login.html")
+                return render_template("login.html",message="You entered wrong password! Try Again")
+        else:
+            return render_template("login.html",message="User cannot be found. If you don't have an account, you can register")
+

@@ -1,0 +1,57 @@
+img{
+    max-width: 100%;
+    height: auto;
+}
+
+.post-img{
+
+}
+.media-body{
+    width: 45%;
+    margin-left: auto;
+    margin-right:auto;
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+
+.like-shape{
+    color:purple;
+   
+}
+.like{
+    margin-top:2%;
+    margin-bottom:2%;
+
+}
+.btn{
+    height: 80%;
+    width: auto;
+    margin-top:2%;
+    margin-bottom:5%;
+}
+.user-name{
+    float: right;
+}
+.post-text{
+    float: left;
+}
+
+#main_list{
+    background-size: cover;
+}
+
+#main_list_two{
+    background-size: cover;
+}
+
+#main_list_three{
+    background-size: cover;
+}
+#comments{
+    overflow-y: scroll;
+    max-height: 140px;
+}
+
+#comment_element{
+    background-color: rgb(217, 215, 250);
+}

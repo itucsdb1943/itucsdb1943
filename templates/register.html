@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/path/to/bootstrap.min.css">
+<link href="/path/to/dist/bootstrap-image-checkbox.css" rel="stylesheet">
 <style type="text/css">
     body {
 		font-family: 'Varela Round', sans-serif;
@@ -86,12 +88,17 @@
 		display: inline-block;
 		margin: 100px auto;
 	}
+	img{
+		width: 40%;
+
+	}
 </style>
 </head>
 <body>
 <!-- Modal HTML -->
 	<div class="modal-dialog modal-login">
 		<div class="modal-content">
+			<font color="red">{{message}}</font>
 			<div class="modal-header">				
 				<h4 class="modal-title">PetWorld</h4>
 			</div>
@@ -138,6 +145,20 @@
 								<input type="checkbox" class="form-check-input" id="exampleCheck1" name="isVet">
 								<label class="form-check-label" for="exampleCheck1">I am Veteriner</label>
 						</div>
+					</div>
+					<div class="custom-control custom-radio image-checkbox" required="required">
+						<input type="radio" class="custom-control-input" id="by" name="ck2" checked="checked" value="../static/crab.png">
+						<label class="custom-control-label" for="ck2a">
+							<img src="../static/crab.png" alt="#" class="img-fluid">
+						</label>
+						<input type="radio" class="custom-control-input" id="sb" name="ck2" value="../static/sungerbob.png" >
+						<label class="custom-control-label" for="ck2a">
+							<img src="../static/sungerbob.png" alt="#" class="img-fluid">
+						</label>
+						<input type="radio" class="custom-control-input" id="pt" name="ck2" value="../static/patrick.png">
+						<label class="custom-control-label" for="ck2a">
+							<img src="../static/patrick.png" alt="#" class="img-fluid">
+						</label>
 					</div>
 					<div class="form-group">
 						<input type="submit" class="btn btn-primary btn-block btn-lg" value="Register">

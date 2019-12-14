@@ -7,6 +7,8 @@ from classes.notices import Notice
 import psycopg2 as dbapi2
 from classes.veteriner import Veteriner
 from classes.rate import *
+from classes.Notification import *
+
 
 class Database:
     def __init__(self, url):
@@ -148,13 +150,59 @@ class Database:
             noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place = cursor.fetchone()
             notice = Notice(noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place)
         return notice
-
+    
+    def get_notifications(self):
+        notifications = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT NOTIFICATION.NOTIFICATIONID,USERS.NAME, USERS.SURNAME, NOTIFICATION.POSTTYPE, NOTIFICATION.NOTIFICATIONTIME, NOTIFICATION.ISSEEN,NOTIFICATION.CONTENT, NOTIFICATION.NOTTYPE,NOTIFICATION.TITLE FROM NOTIFICATION LEFT JOIN USERS ON NOTIFICATION.USERID = USERS.USERID WHERE NOTIFICATION.OWNERID = 13 ORDER BY NOTIFICATIONTIME"""
+            cursor.execute(query)
+            for notificationID,name,surname,postType,notificationTime,isSeen,content,notType,title in cursor:                
+                if postType == 1: #Patigram
+                    if notType == 3:
+                        title = ""
+                    else:                            
+                        if notType == 0:       
+                            description = "Your Patigram Post named {0} is liked by {1} {2}.".format(title,name,surname)
+                        elif notType == 1:
+                            description = "Your Patigram Post named {0} is commented by {1} {2}.".format(title,name,surname)
+                        elif notType == 2:
+                            description = "Your Patigram Post named {0} is shared successfully.".format(title)
+                        else:
+                            description = "Your Patigram Post named {0} is deleted successfully.".format(title)
+                if postType == 3: #Notice
+                    description = "Your Notice named{0} is shared successfully"
+                if postType == 0: #Blog
+                    if notType == 0:
+                        description = "Your blog named {0} is liked by {1} {2}.".format(title,name,surname)
+                    elif notType == 2:
+                        description = "Your blog named {0} is shared successfully.".format(title) 
+                print(description)
+                notifications.append((notificationID,Notificition(notificationID,name,surname,title,notType,notificationTime,isSeen,postType,description,content)))
+        return notifications
+                
+            
     def add_comment(self,Comment):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
             statement = """INSERT INTO COMMENT(POSTID, USERID, DATE, COMMENT, POSTTYPE) VALUES (%s, %s, %s, %s, %s);"""
             cursor.execute(statement, (Comment.postid, Comment.userid, Comment.date, Comment.comment, Comment.posttype))
-
+        
+    def add_notification(self,postType,postTitle,notType,userID,ownerID,content,time):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ INSERT INTO NOTIFICATION(TITLE,NOTIFICATIONTIME,USERID,OWNERID,POSTTYPE,NOTTYPE,CONTENT) 
+                            VALUES(%s,%s,%s,%s,%s,%s,%s)"""
+            cursor.execute(statement,(postTitle,time,userID,ownerID,postType,notType,content))
+    
+    def add_notice(self,title,place,animalType,gender,strain,age,photoUrl,isLost,contact,date,userID):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ INSERT INTO NOTICE(USERID,ANIMALTYPE,AGE,STRAIN,GENDER,PHOTOURL,ISLOST,DESCRIPTION,CONTACT,DATE,PLACE)
+                            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            cursor.execute(statement,(userID,animalType,age,strain,gender,photoUrl,isLost,title,contact,date,place))
+            self.add_notification(3,title,2,userID,userID,"",date)
+    
     def get_comments(self, posttype, postid):
         comments = []
         with dbapi2.connect(self.url) as connection:
