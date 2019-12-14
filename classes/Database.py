@@ -1,3 +1,4 @@
+# coding=utf-8
 from classes.post import Post
 from classes.comment import Comment
 from classes.foundation import Foundation
@@ -6,10 +7,6 @@ from classes.notices import Notice
 import psycopg2 as dbapi2
 from classes.veteriner import Veteriner
 from classes.rate import *
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 
 class Database:
     def __init__(self, url):
@@ -42,23 +39,16 @@ class Database:
         # self.posts[self.last_post_key] = post
         return post_key
    
-    def delete_post(self,post_key):
+
+    def get_post(self,post_key):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            query = """DELETE FROM POST WHERE POSTID = '{0}' """.format(post_key)
+            query = """ SELECT * FROM POST WHERE POSTID = '{0}' """.format(post_key)
             cursor.execute(query)
-            connection.commit()
-
-    
-    def get_post(self,post_key):
-            with dbapi2.connect(self.url) as connection:
-                cursor = connection.cursor()
-                query = """ SELECT * FROM POST WHERE POSTID = '{0}' """.format(post_key)
-                cursor.execute(query)
-                postid,userid,postdate,photourl,description,title,posttag = cursor.fetchone()
-                post = Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)            
-                return post
-            return None
+            postid,userid,postdate,photourl,description,title,posttag = cursor.fetchone()
+            post = Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)            
+            return post
+        return None
 
     def get_posts(self):
         posts = []
@@ -69,6 +59,78 @@ class Database:
             for postid,userid,postdate,photourl,description,title,posttag in cursor:
                 posts.append((postid , Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)))
         return posts
+    
+    def delete_patigram(self,postid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ delete from comment
+                                WHERE POSTID = %s;
+                                DELETE FROM LIKES
+                                WHERE POSTID = %s;
+                                DELETE FROM POST
+                                WHERE POSTID = %s;"""
+            cursor.execute(statement, (postid,postid,postid))
+
+    def update_patigram(self,postid,title,description):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ UPDATE POST
+                            SET TITLE = %s,
+                                DESCRIPTION = %s
+                                WHERE (POSTID = %s);"""
+            cursor.execute(statement,(title, description, postid))
+
+
+    def get_post_user(self,post_key):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT USERID FROM POST
+                        WHERE (POSTID = %s)"""
+            cursor.execute(statement,(post_key,))
+            user_ = cursor.fetchone()
+            user_ = user_[0]
+        return user_
+
+    def patigram_add_like(self, post_key, userid, date_time):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """INSERT INTO LIKES (POSTID, WHOLIKED, DATE) 
+                            VALUES(%s, %s, %s);"""
+            cursor.execute(statement, (post_key, userid, date_time))
+    
+    def patigram_get_like_num(self, postid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ SELECT COUNT(POSTID) FROM LIKES
+                            WHERE POSTID = %s;"""
+            cursor.execute(statement,(postid,))
+            likeN = cursor.fetchone()
+            likeNum = likeN[0]
+            like = int(likeNum)
+        return like
+    
+    def patigram_delete_like(self,postid,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ DELETE FROM LIKES
+                            WHERE(POSTID = %s) AND (WHOLIKED = %s);"""
+            cursor.execute(statement,(postid,userid))
+
+    def patigram_is_user_liked(self, postid, userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT DATE FROM LIKES
+                            WHERE (WHOLIKED = %s) AND (POSTID = %s)"""
+            cursor.execute(statement,(userid, postid))
+            date = cursor.fetchone()
+            # date = date[0]
+            print(date)
+            if date is None:
+                return 0
+            else:
+                return 1
+
+
     def get_notices(self):
         notices = []
         with dbapi2.connect(self.url) as connection:
@@ -100,7 +162,7 @@ class Database:
             statement = """SELECT USERS.NAME, USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
                                 ON (COMMENT.USERID = USERS.USERID)
                             WHERE (POSTTYPE = %s) AND (POSTID = %s)
-                            ORDER BY COMMENTID DESC"""
+                            ORDER BY COMMENTID DESC;"""
             cursor.execute(statement,(posttype,postid))
             connection.commit()
             for name, surname, comment in cursor:
@@ -159,22 +221,75 @@ class Database:
                             INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Cikcilli mah. Gümüşler cd. no:52', 'Alanya', '02125152610', 'Cikcilli Veteriner', 7);
                             INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Gürsel mah. Komşu cd. no:95','Kağıthane', '02127656578', 'Patisever Veteriner', 34);
                             INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Yıldız mah. Abdülhamit cd. no:39', 'Beşiktaş','02128979908', 'Yıldız Veteriner', 34);
-                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Saray mah. Mehmet Çavuş sk. no:10','Alanya', '024253979828','Alaiye Veteriner', 7);"""
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Saray mah. Mehmet Çavuş sk. no:10','Alanya', '024253979828','Alaiye Veteriner', 7);
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Kırcalı mah. Şehzade sk. no:33', 'Merkez', '03585698005', 'Şehzade Pati Veteriner', 5 );
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Hastane mah. Düzaltı cd. no:2', 'Meram', '06473849516', 'Meram Patileri Veteriner', 42);
+                            INSERT INTO Vet(ADDRESS, DISTRICT, TELEPHONE, VETNAME, CITYID) VALUES ('Merkez mah. Kaptan Ali cd. no:61','Ortahisar', '06147904544', 'Mavi Bordo Veteriner', 61);"""
             cursor.execute(statement)
             connection.commit()
+    def create_initial_cities(self):
+        statement = """INSERT INTO CITY VALUES(1, 'Adana'); 
+                       INSERT INTO CITY VALUES(7, 'Antalya');
+                       INSERT INTO CITY VALUES(34, 'İstanbul'); 
+                       INSERT INTO CITY VALUES(35, 'İzmir');
+                       INSERT INTO CITY VALUES(5, 'Amasya'); 
+                       INSERT INTO CITY VALUES(61, 'Trabzon');
+                       INSERT INTO CITY VALUES(43, 'Kütahya'); 
+                       INSERT INTO CITY VALUES(42, 'Konya'); 
+                       INSERT INTO CITY VALUES(6, 'Ankara');
+                       INSERT INTO CITY VALUES(10, 'Bursa');"""
+
+    def get_vet_cities(self):
+        with dbapi2.connect(self.url) as connection:
+            cities = []
+            cursor = connection.cursor()
+            statement = """SELECT DISTINCT CITY.CITYID, CITY.CITYNAME FROM VET LEFT JOIN CITY 
+                            ON (VET.CITYID = CITY.CITYID) 
+                            ORDER BY CITY.CITYID ASC;"""
+            cursor.execute(statement)
+            connection.commit()
+            for cityid, city_name in cursor:
+                cities.append((cityid, city_name))
+            return cities
     
+    def get_cityname(self, cityid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT CITYNAME FROM CITY
+                            WHERE (CITYID = %s)"""
+            cursor.execute(statement, (cityid,))
+            connection.commit()
+            city_name = cursor.fetchone()
+            city_name = city_name[0]
+            return city_name
+
     def get_vets(self):
         with dbapi2.connect(self.url) as connection:
             vets = []
             cursor = connection.cursor()
             statement = """ SELECT VETID,DISTRICT,VETNAME, OVERALLSCORE, VOTENUM, CITY.CITYNAME FROM VET LEFT JOIN CITY
-                            ON (VET.CITYID = CITY.CITYID) """
+                            ON (VET.CITYID = CITY.CITYID)"""
             
             cursor.execute(statement)
             connection.commit()
             for vetid,district, vetname, score, votenum, cityname  in cursor:
                 vets.append({ "vetid":vetid, "vetname":vetname, "district": district, "cityname":cityname,"score": score, "votenum":votenum})
         return vets
+
+    def get_selected_vets(self, selectedid):
+        with dbapi2.connect(self.url) as connection:
+            vets = []
+            cursor = connection.cursor()
+            statement = """ SELECT VETID,DISTRICT,VETNAME, OVERALLSCORE, VOTENUM, CITY.CITYNAME FROM VET LEFT JOIN CITY
+                            ON (VET.CITYID = CITY.CITYID)
+                            WHERE ( VET.CITYID = %s) """
+            
+            cursor.execute(statement,(selectedid,))
+            connection.commit()
+            for vetid,district, vetname, score, votenum, cityname  in cursor:
+                vets.append({ "vetid":vetid, "vetname":vetname, "district": district, "cityname":cityname,"score": score, "votenum":votenum})
+        return vets
+
 
     def get_vet(self, vetid):
         with dbapi2.connect(self.url) as connection:
@@ -191,10 +306,51 @@ class Database:
             print(vet.vetName)
             return vet
         return None
+    
+    def delete_rate(self, userid, vetid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor() 
+            statement = """ SELECT OVERALLSCORE, PRICERATE, SERVICERATE FROM RATING
+                            WHERE (USERID = %s) AND (VETID = %s)""" 
+            cursor.execute(statement,(userid, vetid)) 
+            overall, price, service = cursor.fetchone()
+
+            statement = """DELETE FROM RATING
+                            WHERE (USERID = %s) AND (VETID = %s);"""   
+            cursor.execute(statement,(userid, vetid))
+            statement=""" SELECT VOTENUM FROM VET
+                        WHERE (VETID = %s)"""
+            cursor.execute(statement,(vetid,))
+            voteN = cursor.fetchone()
+            vote = voteN[0]
+            vot = int(vote)
+            print(vot)
+            if vot is 1:
+                statement = """ UPDATE VET
+                            SET OVERALLSCORE = 0,
+                                PRICERATE = 0,
+                                SERVICERATE = 0,
+                                VOTENUM = 0
+                                WHERE (VETID = %s);"""
+                cursor.execute(statement,(vetid,))
+            else:
+                statement =    """ UPDATE Vet
+                                    SET OVERALLSCORE = ((OVERALLSCORE * VOTENUM) - %s) / (VOTENUM-1),
+                                        PRICERATE = ((PRICERATE * VOTENUM) - %s) / (VOTENUM-1),
+                                        SERVICERATE = ((SERVICERATE * Vet.VOTENUM) - %s) / (VOTENUM-1),
+                                        VOTENUM = VOTENUM - 1
+                                    WHERE (VETID = %s);"""
+                cursor.execute(statement, (overall, price, service, vetid))
 
     def add_rate(self, rate):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
+            statement = """SELECT * FROM RATING
+                            WHERE (USERID = %s) AND (VETID = %s)"""
+            cursor.execute(statement,(rate.userid, rate.vetid))
+            if cursor.fetchone() is not None:
+                print("none değilmiş")
+                self.delete_rate(rate.userid, rate.vetid)       
             statement = """INSERT INTO Rating(USERID, VETID, OVERALLSCORE, PRICERATE, SERVICERATE, COMMENT, DATE, TITLE)
                         VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"""
             cursor.execute(statement,(rate.userid, rate.vetid, rate.overallScore, rate.priceRate, rate.serviceRate, rate.comment, rate.date, rate.title))
@@ -207,3 +363,26 @@ class Database:
                                 WHERE (VETID = %s);"""
             cursor.execute(statement, (rate.overallScore, rate.priceRate, rate.serviceRate, rate.vetid))
 
+    def get_user_name(self, userid):
+        with dbapi2.connect(self.url) as connection:            
+            cursor = connection.cursor()
+            statement = """SELECT name, surname FROM USERS
+                            WHERE (USERID = %s)"""
+            cursor.execute(statement, (userid,))
+            name, surname = cursor.fetchone()
+            user_ = name + " " + surname
+            return user_
+
+    def get_rates(self,vetid):
+        rates = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT rateid, name, surname, vetid,  overallScore, priceRate, serviceRate, comment, date, title FROM RATING LEFT JOIN USERS
+                            ON (RATING.USERID = USERS.USERID)
+                            WHERE (VETID = %s)"""
+            cursor.execute(statement, (vetid,))
+            
+            for rateid, name, surname, vetid, overallScore, priceRate, serviceRate, comment, date, title in cursor:
+                user = name + " " + surname
+                rates.append(Rate(rateid, user, vetid, overallScore, priceRate, serviceRate, comment, title, date))
+        return rates
