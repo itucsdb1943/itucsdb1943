@@ -77,17 +77,36 @@ def blog_info_page():
 def blog_add_page():
 	return "add blog"
 
-@app.route("/findvet")
+@app.route("/findvet", methods=["GET", "POST"])
 def findVet_page():
     db = current_app.config["db"]
-    vets = db.get_vets()
-    #db.create_initial_vets()
-    for vet in vets:
-        print(vet["cityname"])
-        score = vet["score"]
-        score = score * 20
-        vet["score"] = score
-    return render_template("findVet/findVet.html", vets=vets)
+    if request.method == "GET":
+        vets = db.get_vets()
+        #db.create_initial_vets()
+        for vet in vets:
+            print(vet["cityname"])
+            score = vet["score"]
+            score = score * 20
+            vet["score"] = score
+            cities = db.get_vet_cities()
+        return render_template("findVet/findVet.html", vets=vets, cities=cities)
+    else:
+        form_id = request.form["city_select"]
+        if form_id == "0":
+            vets = db.get_vets()
+            selected_city = 0
+        else:
+            selected_city = db.get_cityname(form_id)
+            vets = db.get_selected_vets(form_id)
+        for vet in vets:
+            print(vet["cityname"])
+            score = vet["score"]
+            score = score * 20
+            vet["score"] = score
+            cities = db.get_vet_cities()
+        
+        return render_template("findVet/findVet.html", vets=vets, cities=cities, selected_city=selected_city)
+
 
 @app.route("/findVet/<int:vet_key>")
 def vet_custom_page(vet_key):
@@ -232,6 +251,10 @@ def patigram_update(post_key):
         old_post = db.get_post(post_key)
         # is_title = request.form["title"]
         # is_desc = request.form["description"]
+        form_titlerr =  request.form.get("title_sentence", "").strip()
+        if len(form_titlerr) == 0 and "title" in request.form:
+            return render_template("patigram/patigramUpdate.html", error = 1)
+
         form_title = request.form["title_sentence"]
         form_description = request.form["description_sentence"]
         if "title" in request.form and "description" in request.form:

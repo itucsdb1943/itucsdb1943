@@ -18,8 +18,12 @@
                 <label class="form-check-label text-info" for="inlineCheckbox2">Description</label>
             </div>
             <div class="form-group ">
+
                 <label class="text-info" for="title" >Title</label>
                 <input style="width:50%;"  type="text" class="form-control mt-6" id="title" name="title_sentence" aria-describedby="titleHelp" placeholder="Enter Title">
+                {%if error%}
+                    <b style="color:rgb(202, 165, 216); font-size:14px;"> Title can not be blank! </b>
+                {%endif%}
             </div>
             <div class="form-group mt-2">
                 <label class="text-info" for="description" >Description</label>
