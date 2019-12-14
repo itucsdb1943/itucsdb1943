@@ -11,6 +11,9 @@
 
 {% endblock %}
 {% block content %}
+{%if success%}
+    <h3 class="text-info"> Your ratings are updated succesfully! </h3>
+{%endif%}
 {%if vet%}
     {% set vet_id = vet.vetid%}
     <div class="card text-center">
@@ -61,10 +64,64 @@
             <div >
                 <i class="fa fa-map-marker text-info" style="font-size:34px; color:#30AFBF;">{{vet.address}}  {{vet.district}}/{{vet.cityName}}  </i>
             </div>
+            <div class="mt-4">
+                <i class="fa fa-phone" style="font-size:32px; color:green;">{{vet.telephone}}</i>
+            </div>
             
         </div>
     </div>
+    {%if rates%}
+    <h1 class="card-title text-info mt-5">Evaluations </h1>
+        {%for rate in rates%}
+            <div class="card text-center", style="width:48rem;">
+                <div class="card-body ">
 
-
+                    <p class="card-title text-left  font-weight-bold" style="font-size:21px;">{{rate.userid}} </p>
+                    <p class="card-title text-left text-info " style="font-size:20px;">{{rate.title}} </p>
+                    <div class="row mt-4 ">
+                        <div class="col-sm mb-3">
+                            <h4>Overall Score</h4>
+                            {%for i in range(rate.overallScore)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.overallScore)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.overallScore}}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <h4>Service Score</h4>
+                            {%for i in range(rate.serviceRate)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.serviceRate)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.serviceRate}}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <h4>Price Score</h4>
+                            {%for i in range(rate.priceRate)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.priceRate)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.priceRate}}</h4>
+                        </div>       
+                    </div>
+                    {%if rate.comment is not none%}
+                        <div >
+                            <p class="text-left" style="font-size:18px;"> {{rate.comment}}</p>
+                        </div>
+                    {%endif%}
+                    <div class="mt-4">
+                        <p style="font-size:10px;"> Date: {{rate.date}} </p>
+                    </div>
+                    
+                </div>
+            </div>
+        {%endfor%}
+    {%endif%}   
 {%endif%}
 {% endblock %}

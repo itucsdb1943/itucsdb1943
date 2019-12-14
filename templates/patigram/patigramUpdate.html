@@ -1,0 +1,37 @@
+{% extends "navbar.html" %}
+{% block csslinks %}    <link rel="stylesheet" href="{{ url_for('static', filename='patigra.css') }}"> {% endblock %}
+
+{% block title %} Home Page {%endblock %}
+{% block content %}
+
+
+ <form class="md-form" action="" method="post" name="patigram_update" >
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item" id="main_list_three"> 
+            <button type="button" class="btn btn-outline-info"  > Please only select the properties that you want to change. You can not change photo and tag! </button>
+            <div class="form-group">
+                <input class="form-group" type="checkbox" name="title" value="ok">
+                <label class="form-check-label text-info" for="inlineCheckbox2">Title</label>
+            </div>
+            <div class="form-group mb-3">
+                <input class="form-group" type="checkbox" name="description" value="ok">
+                <label class="form-check-label text-info" for="inlineCheckbox2">Description</label>
+            </div>
+            <div class="form-group ">
+
+                <label class="text-info" for="title" >Title</label>
+                <input style="width:50%;"  type="text" class="form-control mt-6" id="title" name="title_sentence" aria-describedby="titleHelp" placeholder="Enter Title">
+                {%if error%}
+                    <b style="color:rgb(202, 165, 216); font-size:14px;"> Title can not be blank! </b>
+                {%endif%}
+            </div>
+            <div class="form-group mt-2">
+                <label class="text-info" for="description" >Description</label>
+                <input style="width:50%;" class="form-control" name="description_sentence" id="Description" rows="2">
+            </div>
+            <button type="submit" class="btn btn-outline-info float-right" > Save </button>          
+        </li> 
+    </ul>
+  </form>
+<a href="https://www.sciencealert.com/here-s-why-cats-have-such-weird-eyes">Background image's website </a>
+{% endblock %}

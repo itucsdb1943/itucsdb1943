@@ -8,25 +8,29 @@
     <li class="list-group-item" id="main_list" > 
         <div class="media-body">
             <div class = "post-title">
-                <p class="user-name text-info">{{ post.userid}}</p>
+                <p class="user-name text-info">@{{ post.userid}}</p>
                 <p class="post-text text-info">{{post.title}}</p>
             </div>
-            
+            {% set post_key = post.postid -%}
             <img src="{{ url_for('static',filename='patigram/') }}{{post.photo}}" class="rounded border border-info rounded"  alt="{{ url_for('static', filename='') }}{{post.photo}}" > 
             <div class="like" >
                 <button type="button " class="btn btn-outline-info" > &hearts; </button>
-                <button type="button" class="btn btn-outline-info"  > Like number </button>
+                <button type="button" class="btn btn-outline-info"  > {{likenum}}</button>
+                {%if is_user_post == 1%}
+                    <button type="button" class="btn btn-outline-info"  onclick="window.location.href='{{ url_for('patigram_update', post_key=post_key) }}';"> Update </button>
+                    <button type="button" class="btn btn-outline-info"  onclick="window.location.href='{{ url_for('patigram_delete', post_key=post_key) }}';"> Delete </button>
+                {%endif%}
             </div> 
             {%if post.description is not none %}
                 <div >
-                    <p class="text-info ">{{ post.description}}</p>  
+                    <p class="text-info ">{{ post.description}}   #{{post.posttag}}</p>  
                 </div>
             {%endif%}
             {%if comments %}
                 <ul class="list-group list-group-flush" id="comments" >
                     {%for comment in comments %}                    
                         <li  class="list-group-item text-info" id= "comment_element">
-                                @{{comment["name"]}} {{ comment["surname"]}}: {{comment["comment"]}} 
+                                @{{comment["name"]}} {{ comment["surname"]}}: {{comment["comment"]}}   
                         </li>
                     {%endfor %}
                 </ul>   
