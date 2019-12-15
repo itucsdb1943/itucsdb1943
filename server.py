@@ -20,8 +20,8 @@ from datetime import datetime as dt
 from datetime import datetime
 now = datetime.now()
 import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 #For uploading photo
