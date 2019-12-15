@@ -352,16 +352,20 @@ def patigram_custom_page(post_key):
     likenum = db.patigram_get_like_num( post_key)
     now_user = session['user_id']
     post_user = db.get_post_user(post_key)
-    isusers_post = 2
-    if now_user == post_user:
-        isusers_post = 1
+    is_user_post = 2
+    now_user = now_user[0]
+    print(type(now_user))
+    print(type(post_user))
+    if int(now_user) == post_user:
+        is_user_post = 1
     else:
-        isusers_post = 0
+        is_user_post = 0
+    print(is_user_post)
     post.userid = db.get_user_name(post.userid)
     comments = db.get_comments(patigram_post_type,post_key)
     if post is None:
         abort(404) #This should be defined
-    return render_template("patigram/patigram_custom.html", post=post, comments = comments, is_user_post = isusers_post, likenum = likenum)
+    return render_template("patigram/patigram_custom.html", post=post, comments = comments, is_user_post = is_user_post, likenum = likenum)
 
 @app.route("/patigram", methods=["GET", "POST"])
 def patigram_page():
@@ -393,11 +397,11 @@ def patigram_page():
 @app.route("/patigram/delete/<int:post_key>")
 def patigram_delete(post_key):
     db = current_app.config["db"]
-    post = deb.get_post(post_key)
+    post = db.get_post(post_key)
     db.delete_patigram(post_key)
     userid = session['user_id']
     date_time = now.strftime("%d/%m/%y %H:%M:%S")
-    add_notification(1,post.title,3,userid,userid,"",date_time)
+    db.add_notification(1,post.title,3,userid,userid,"",date_time)
 
     return redirect(url_for("patigram_page"))
 
