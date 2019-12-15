@@ -109,11 +109,10 @@
 							<input type="submit" class="btn btn-primary btn-block btn-lg" value="Login">
 						</div>
 				</form>
-				<font color="red">{{message}}</font>
-							
+				<font color="red">{{message}}</font>							
 			</div>
 			<div class="modal-footer">
-				<a href="#">Sign Up</a>
+				<a href="{{ url_for('register_page') }}">Sign Up</a>
 			</div>
 		</div>
 	</div>

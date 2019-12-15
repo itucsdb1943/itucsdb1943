@@ -20,7 +20,10 @@ class Database:
         self._last_foundation_key = 0
         self.blogs = {}
         self.last_blog_key = 0
-		
+    
+    
+
+
     def add_post(self, post):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -42,7 +45,23 @@ class Database:
         # self.posts[self.last_post_key] = post
         return post_key
    
-
+    def delete_notifications(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM NOTIFICATION WHERE OWNERID = '{0}' OR USERID = '{0}'""".format(userid)
+            cursor.execute(statement)
+    def delete_notices(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM NOTICE WHERE USERID = '{0}'""".format(userid)
+            cursor.execute(statement)
+    
+    def delete_socialMedia(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM SOCIALMEDIA WHERE OWNERID = '{0}' """.format(userid)
+            cursor.execute(statement)
+    
     def get_post(self,post_key):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -52,6 +71,36 @@ class Database:
             post = Post(postid, userid, postdate, photourl, title, description = description, posttag = posttag)            
             return post
         return None
+
+    def delete_user_comments(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM COMMENT WHERE USERID = '{0}' """.format(userid)
+            cursor.execute(statement)
+    
+    def delete_user_likes(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM LIKES WHERE WHOLIKED = '{0}' """.format(userid)
+            cursor.execute(statement)
+    def delete_user_rating(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM RATING WHERE USERID = '{0}' """.format(userid)
+            cursor.execute(statement)
+
+
+    def delete_post(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            posts = []
+            cursor = connection.cursor()
+            statement = """SELECT POSTID FROM POST WHERE USERID = '{0}'""".format(userid)
+            cursor.execute(statement)
+            for postid in cursor:
+                self.delete_patigram(postid)
+            
+            
+            
 
     def get_posts(self):
         posts = []
@@ -481,3 +530,8 @@ class Database:
                            WHERE (USERID = %s) AND (VETID = %s);"""
             cursor.execute(statement,(comment, date, userid, vetid))
             connection.commit()
+    def delete_user(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """DELETE FROM USERS WHERE USERID = '{0}'""".format(userid)
+            cursor.execute(statement)

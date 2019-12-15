@@ -13,8 +13,7 @@
   <body>
     <nav class="navbar navbar-expand-lg bg-info .fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">PetWorld</a>
-                <img src="{{ url_for('static', filename='saziskom.jpg') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+                <a class="navbar-brand" href="#" style="color: white;" >PetWorld</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -49,17 +48,16 @@
                         </a>
                         <div class="dropdown-menu text-info  bg-dark" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item  text-info " href="{{ url_for('patigram_page') }}">Patigram</a>
-                            <a class="dropdown-item  text-info " href="{{ url_for('notifications_page') }}">Notifications</a>
                         </div>
-
                     </li>
+                    {% if session['logged_in'] %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Add
                         </a>
                         <div class="dropdown-menu text-info  bg-dark" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item  text-info " href="{{ url_for('patigram_add_page') }}">Blog</a>
-                            <a class="dropdown-item  text-info " href="{{ url_for('notification_add_page') }}">Notifications</a>
+                            <a class="dropdown-item  text-info " href="{{ url_for('noticeAdd_page') }}">Notice</a>
                             <a class="dropdown-item  text-info " href="{{ url_for('patigram_add_page') }}">Patigram</a>
                         </div>
 
@@ -72,12 +70,13 @@
                                 My Profile
                                 </a>
                                 <div class="dropdown-menu text-info  bg-dark" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item  text-info " href="{{ url_for('notice_page') }}">Notices</a>
-                                <a class="dropdown-item  text-info " href="#">Account</a>
+                                <a class="dropdown-item  text-info " href="{{ url_for('notifications_page') }}">Notifications</a>
+                                <a class="dropdown-item  text-info " href="{{ url_for('profile_page') }}">Profile Page</a>
                                 <a class="dropdown-item  text-info " href="{{ url_for('logout_page')}}">Logout</a>
                             </li>
                         </ul>
                 </div>
+                {% endif %}
             </div>
         </nav>
 
