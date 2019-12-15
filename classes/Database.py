@@ -209,14 +209,14 @@ class Database:
         comments = []
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            statement = """SELECT USERS.NAME, USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
+            statement = """SELECT USERS.NAME, COMMENT.USERID,USERS.SURNAME,COMMENT.COMMENT FROM COMMENT JOIN USERS
                                 ON (COMMENT.USERID = USERS.USERID)
                             WHERE (POSTTYPE = %s) AND (POSTID = %s)
                             ORDER BY COMMENTID DESC;"""
             cursor.execute(statement,(posttype,postid))
             connection.commit()
-            for name, surname, comment in cursor:
-                comments.append({"name": name, "surname": surname, "comment": comment}) 
+            for name, userid, surname, comment in cursor:
+                comments.append({"name": name, "userid":userid, "surname": surname, "comment": comment}) 
         return comments
     def add_foundation(self, foundation):
         self.last_foundation_key += 1
