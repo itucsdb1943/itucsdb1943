@@ -260,6 +260,8 @@ def patigram_like(post_key):
     userid = session['user_id']
     date_time = now.strftime("%d/%m/%y %H:%M:%S")
     db.patigram_add_like(post_key, userid, date_time)
+    post = db.get_post(post_key)
+    db.add_notification(1,post.title,0,userid,post.userid,"",date_time)
     return redirect(url_for("patigram_page"))
 
 @app.route("/patigram/likedel/<int:post_key>")
@@ -312,12 +314,19 @@ def patigram_page():
         post_type = 0
         db = current_app.config["db"]
         db.add_comment(Comment(commentid, form_postid, userid, date_time, form_comment, post_type))
+        post = db.get_post(form_postid)
+        db.add_notification(1,post.title,1,userid,post.userid,form_comment,date_time)
         return redirect(url_for("patigram_custom_page", post_key=form_postid))
 
 @app.route("/patigram/delete/<int:post_key>")
 def patigram_delete(post_key):
     db = current_app.config["db"]
+    post = deb.get_post(post_key)
     db.delete_patigram(post_key)
+    userid = session['user_id']
+    date_time = now.strftime("%d/%m/%y %H:%M:%S")
+    add_notification(1,post.title,3,userid,userid,"",date_time)
+
     return redirect(url_for("patigram_page"))
 
 @app.route("/patigram/update/<int:post_key>", methods =["GET", "POST"])
@@ -382,6 +391,7 @@ def patigram_add_page():
         post = Post(post_id,user_id,date_time,form_photo,form_title,description=form_description if form_description else None, posttag=form_tag if form_tag else None)
         db = current_app.config["db"]
         post_key = db.add_post(post)
+        db.add_notification(1,form_title,2,user_id,user_id,"",date_time)
         return redirect(url_for("patigram_custom_page", post_key=post_key))
 
 @app.route("/notifications")

@@ -28,7 +28,9 @@
                         <button type="button" class="btn btn-outline-info"  > {{likeN}} </button>
                         <button type="button"  onclick="window.location.href='{{ url_for('patigram_custom_page', post_key=post_key) }}';"  class="btn btn-outline-info float-right" > See Detail</button>
                     </div> 
-                    
+                    <div class="float-right" >
+                        <p class="text-info ">{{ post.postdate}}</p>  
+                    </div>
                     <form class="form" action="" method="post" name="comment_add">
                         <div class="form-group ">
                         
