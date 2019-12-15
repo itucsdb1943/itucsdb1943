@@ -20,8 +20,8 @@ from datetime import datetime as dt
 from datetime import datetime
 now = datetime.now()
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
 
 #For uploading photo
@@ -354,6 +354,7 @@ def patigram_custom_page(post_key):
     post_user = db.get_post_user(post_key)
     is_user_post = 2
     now_user = now_user[0]
+
     print(type(now_user))
     print(type(post_user))
     if int(now_user) == post_user:
@@ -365,7 +366,8 @@ def patigram_custom_page(post_key):
     comments = db.get_comments(patigram_post_type,post_key)
     if post is None:
         abort(404) #This should be defined
-    return render_template("patigram/patigram_custom.html", post=post, comments = comments, is_user_post = is_user_post, likenum = likenum)
+    userid = post_user
+    return render_template("patigram/patigram_custom.html", post=post, comments = comments, is_user_post = is_user_post, likenum = likenum, userid=userid)
 
 @app.route("/patigram", methods=["GET", "POST"])
 def patigram_page():

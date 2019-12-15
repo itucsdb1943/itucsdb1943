@@ -8,7 +8,7 @@
     <li class="list-group-item" id="main_list" > 
         <div class="media-body">
             <div class = "post-title">
-                <p class="user-name text-info">@{{ post.userid}}</p>
+                <a href="{{url_for('other_profile_page', userid=userid)}}" class="user-name text-info">@{{ post.userid}}</a>
                 <p class="post-text text-info">{{post.title}}</p>
             </div>
             {% set post_key = post.postid -%}
@@ -28,9 +28,10 @@
             {%endif%}
             {%if comments %}
                 <ul class="list-group list-group-flush" id="comments" >
-                    {%for comment in comments %}                    
+                    {%for comment in comments %}
+                        {%set userid = comment["userid"] -%}                    
                         <li  class="list-group-item text-info" id= "comment_element">
-                                @{{comment["name"]}} {{ comment["surname"]}}: {{comment["comment"]}}   
+                            <a href="{{url_for('other_profile_page', userid=userid)}}">@{{comment["name"]}} {{ comment["surname"]}}:</a>   {{comment["comment"]}}   
                         </li>
                     {%endfor %}
                 </ul>   
