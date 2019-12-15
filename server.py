@@ -3,27 +3,26 @@ import os
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template,request,session
-
-from flask import Flask, render_template,request,session
 import psycopg2 as dbapi2
-from flask import current_app, redirect, Flask,url_for
+from flask import current_app, redirect, Flask,url_for,Blueprint,flash
 from views import site
-from flask_login import LoginManager,login_required,current_user
+from flask_login import LoginManager,login_required,current_user,login_user
 from classes.post import *
 from classes.Database import Database
 from flask_login import logout_user
 from passlib.apps import custom_app_context as pwd_context
-import psycopg2 as dbapi2
 from passlib.hash import pbkdf2_sha256 as hasher
 from classes.Users import *
 from classes.forms import *
 from classes.comment import *
 from classes.rate import *
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+from datetime import datetime as dt
 from datetime import datetime
 now = datetime.now()
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 #For uploading photo
 UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
@@ -60,6 +59,76 @@ def home_page():
     print(current_user)
     print("geldik buralara")
     return render_template("home.html")
+@app.route("/login", methods=['GET','POST'])
+def login_page():
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        form = request.form
+        username = form['username']
+        password = form['password']
+        user = get_user(username)
+        if user is not None:
+            if hasher.verify(password, user.password):
+                login_user(user,remember=True,force=True) 
+                print(current_user)
+                print("you logged")
+                session['logged_in'] = True
+                session['user_id'] = current_user.id
+                print(session['user_id'])
+                flash("You have logged in.")
+                next_page = request.args.get("next", url_for("home_page"))
+                return redirect(next_page)
+            else:
+                print("you cant logged")
+                flash("You cant logged in.")
+                return render_template("login.html",message="You entered wrong password! Try Again")
+        else:
+            return render_template("login.html",message="User cannot be found. If you don't have an account, you can register")
+
+@app.route("/register", methods=['GET','POST'])
+def register_page():
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        form = request.form
+        name = form['name']
+        surname = form['surname']
+        email = form['email']
+        password = form['password']
+        hashed = hasher.hash(password)
+        facebook = form['facebook']
+        twitter = form['twitter']
+        instagram = form['instagram']
+        youtube = form['youtube']
+        website = form['website']
+        if form.get('isVet'):
+            isVet = 1
+        else:
+            isVet = 0
+        photoUrl = form['ck2']
+        registerTime = now.strftime("%d/%m/%y %H:%M:%S")
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            try:
+                statement = """INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD,PHOTO,REGISTERDATE)
+                VALUES (%s,%s,%s,%s,%s,%s,%s); """
+                cursor.execute(statement,(name,surname,email,isVet,hashed,photoUrl,registerTime))
+            except:
+                return render_template("register.html",message = "The email address is already used!")
+
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            statement = """ SELECT USERID FROM USERS WHERE EMAIL = '{0}' """.format(email)
+            cursor.execute(statement)
+            userid = cursor.fetchone()[0]        
+        with dbapi2.connect(url) as connection:
+            cursor = connection.cursor()
+            statement = """ INSERT INTO SOCIALMEDIA(OWNERID,FACEBOOK,TWITTER,INSTAGRAM,YOUTUBE,WEBSITE)
+                            VALUES('{0}','{1}','{2}','{3}','{4}','{5}') """.format(userid,facebook,twitter,instagram,youtube,website)
+            cursor.execute(statement)        
+        # next_page = request.args.get("next", url_for("login_page"))
+        return redirect(url_for("login_page"))
 
 @app.route("/logout")
 def logout_page():
@@ -75,6 +144,11 @@ def post_page():
 def profile_page():
     user = db.get_user_detail(session['user_id'])
     return render_template("profile.html",user = user)
+
+@app.route("/profile/<int:userid>")
+def other_profile_page(userid):
+    user = db.get_user_detail(userid)
+    return render_template("othersProfile.html",user = user)
 
 @app.route("/blog")
 def blog_page():
@@ -139,8 +213,6 @@ def vet_custom_page(vet_key):
     # print(vet.vetName)
     rates = db.get_rates(vet_key)
     return render_template("findVet/vet_custom_page.html", vet=vet,rates=rates, now_user = now_user)
-
-
 
 
 @app.route("/findVet/delete/<int:vet_id>")
