@@ -72,7 +72,7 @@
     </div>
     {%if rates%}
     <h1 class="card-title text-info mt-5">Evaluations </h1>
-        {%for rate in rates%}
+        {%for user_id, rate in rates%}
             <div class="card text-center", style="width:48rem;">
                 <div class="card-body ">
 
@@ -114,6 +114,15 @@
                         <div >
                             <p class="text-left" style="font-size:18px;"> {{rate.comment}}</p>
                         </div>
+                    {%endif%}
+                    {%if now_user == user_id%}
+                        <form class="form" action="" method="post" name="rating_update">
+                            <div class="form-group ">
+                                <p class="text-info"> You can change your comment</p c>
+                                <input class="form-control "  name="comment" id="comment" rows="1" placeholder="Change your comment"></textarea>
+                                <button type="submit" class="btn btn-outline-info float-right mt-2" name="add"  > Change </button>
+                            </div>
+                        </form>
                     {%endif%}
                     <div class="mt-4">
                         <p style="font-size:10px;"> Date: {{rate.date}} </p>

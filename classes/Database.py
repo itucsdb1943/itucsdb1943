@@ -276,16 +276,20 @@ class Database:
             cursor.execute(statement)
             connection.commit()
     def create_initial_cities(self):
-        statement = """INSERT INTO CITY VALUES(1, 'Adana'); 
-                       INSERT INTO CITY VALUES(7, 'Antalya');
-                       INSERT INTO CITY VALUES(34, 'İstanbul'); 
-                       INSERT INTO CITY VALUES(35, 'İzmir');
-                       INSERT INTO CITY VALUES(5, 'Amasya'); 
-                       INSERT INTO CITY VALUES(61, 'Trabzon');
-                       INSERT INTO CITY VALUES(43, 'Kütahya'); 
-                       INSERT INTO CITY VALUES(42, 'Konya'); 
-                       INSERT INTO CITY VALUES(6, 'Ankara');
-                       INSERT INTO CITY VALUES(10, 'Bursa');"""
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """INSERT INTO CITY VALUES(1, 'Adana'); 
+                        INSERT INTO CITY VALUES(7, 'Antalya');
+                        INSERT INTO CITY VALUES(34, 'İstanbul'); 
+                        INSERT INTO CITY VALUES(35, 'İzmir');
+                        INSERT INTO CITY VALUES(5, 'Amasya'); 
+                        INSERT INTO CITY VALUES(61, 'Trabzon');
+                        INSERT INTO CITY VALUES(43, 'Kütahya'); 
+                        INSERT INTO CITY VALUES(42, 'Konya'); 
+                        INSERT INTO CITY VALUES(6, 'Ankara');
+                        INSERT INTO CITY VALUES(10, 'Bursa');"""
+            cursor.execute(statement)
+            connection.commit()
 
     def get_vet_cities(self):
         with dbapi2.connect(self.url) as connection:
@@ -311,6 +315,13 @@ class Database:
             city_name = city_name[0]
             return city_name
 
+    def delete_vet(self,vet_id):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """ delete from rating where (vetid = %s);
+                            delete from vet where (vetid = %s);"""
+            cursor.execute(statement, (vet_id, vet_id))
+            connection.commit()
     def get_vets(self):
         with dbapi2.connect(self.url) as connection:
             vets = []
@@ -425,12 +436,22 @@ class Database:
         rates = []
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            statement = """SELECT rateid, name, surname, vetid,  overallScore, priceRate, serviceRate, comment, date, title FROM RATING LEFT JOIN USERS
+            statement = """SELECT rating.userid, rateid, name, surname, vetid,  overallScore, priceRate, serviceRate, comment, date, title FROM RATING LEFT JOIN USERS
                             ON (RATING.USERID = USERS.USERID)
                             WHERE (VETID = %s)"""
             cursor.execute(statement, (vetid,))
             
-            for rateid, name, surname, vetid, overallScore, priceRate, serviceRate, comment, date, title in cursor:
+            for userid, rateid, name, surname, vetid, overallScore, priceRate, serviceRate, comment, date, title in cursor:
                 user = name + " " + surname
-                rates.append(Rate(rateid, user, vetid, overallScore, priceRate, serviceRate, comment, title, date))
+                rates.append((userid, (Rate(rateid, user, vetid, overallScore, priceRate, serviceRate, comment, title, date))))
         return rates
+
+    def update_rating(self,vetid,userid,comment,date):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE RATING
+                            SET COMMENT = %s,
+                                DATE = %s
+                           WHERE (USERID = %s) AND (VETID = %s);"""
+            cursor.execute(statement,(comment, date, userid, vetid))
+            connection.commit()
