@@ -8,7 +8,8 @@ import psycopg2 as dbapi2
 from classes.veteriner import Veteriner
 from classes.rate import *
 from classes.Notification import *
-
+from classes.Profile import *
+from flask import session
 
 class Database:
     def __init__(self, url):
@@ -133,14 +134,15 @@ class Database:
                 return 1
 
 
-    def get_notices(self):
+    def get_notices(self,Lost):
         notices = []
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
             query = """select noticeid,notice.userid,users.name,users.surname,animaltype,age,strain,gender,photourl,islost,description,contact,date,place from notice left join users on users.userid = notice.userid ORDER BY DATE"""
             cursor.execute(query)
             for noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place in cursor:
-                notices.append((noticeID,Notice(noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place)))
+                if isLost == Lost:
+                    notices.append((noticeID,Notice(noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place)))
         return notices
     def get_notice(self,noticeID):
         with dbapi2.connect(self.url) as connection:
@@ -155,7 +157,7 @@ class Database:
         notifications = []
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
-            query = """SELECT NOTIFICATION.NOTIFICATIONID,USERS.NAME, USERS.SURNAME, NOTIFICATION.POSTTYPE, NOTIFICATION.NOTIFICATIONTIME, NOTIFICATION.ISSEEN,NOTIFICATION.CONTENT, NOTIFICATION.NOTTYPE,NOTIFICATION.TITLE FROM NOTIFICATION LEFT JOIN USERS ON NOTIFICATION.USERID = USERS.USERID WHERE NOTIFICATION.OWNERID = 13 ORDER BY NOTIFICATIONTIME"""
+            query = """SELECT NOTIFICATION.NOTIFICATIONID,USERS.NAME, USERS.SURNAME, NOTIFICATION.POSTTYPE, NOTIFICATION.NOTIFICATIONTIME, NOTIFICATION.ISSEEN,NOTIFICATION.CONTENT, NOTIFICATION.NOTTYPE,NOTIFICATION.TITLE FROM NOTIFICATION LEFT JOIN USERS ON NOTIFICATION.USERID = USERS.USERID WHERE NOTIFICATION.OWNERID = {0} ORDER BY NOTIFICATIONTIME""".format(session['user_id'])
             cursor.execute(query)
             for notificationID,name,surname,postType,notificationTime,isSeen,content,notType,title in cursor:                
                 if postType == 1: #Patigram
@@ -163,20 +165,20 @@ class Database:
                         title = ""
                     else:                            
                         if notType == 0:       
-                            description = "Your Patigram Post named {0} is liked by {1} {2}.".format(title,name,surname)
+                            description = """Your Patigram Post named "{0}" is liked by {1} {2}.""".format(title,name,surname)
                         elif notType == 1:
-                            description = "Your Patigram Post named {0} is commented by {1} {2}.".format(title,name,surname)
+                            description = """Your Patigram Post named "{0}" is commented by {1} {2}.""".format(title,name,surname)
                         elif notType == 2:
-                            description = "Your Patigram Post named {0} is shared successfully.".format(title)
+                            description = """Your Patigram Post named "{0}" is shared successfully.""".format(title)
                         else:
-                            description = "Your Patigram Post named {0} is deleted successfully.".format(title)
+                            description = """Your Patigram Post named "{0}" is deleted successfully.""".format(title)
                 if postType == 3: #Notice
-                    description = "Your Notice named{0} is shared successfully"
+                    description = """Your Notice named "{0}" is shared successfully""".format(title)
                 if postType == 0: #Blog
                     if notType == 0:
-                        description = "Your blog named {0} is liked by {1} {2}.".format(title,name,surname)
+                        description = """Your blog named "{0}" is liked by {1} {2}.""".format(title,name,surname)
                     elif notType == 2:
-                        description = "Your blog named {0} is shared successfully.".format(title) 
+                        description = """Your blog named "{0}" is shared successfully.""".format(title) 
                 print(description)
                 notifications.append((notificationID,Notificition(notificationID,name,surname,title,notType,notificationTime,isSeen,postType,description,content)))
         return notifications
@@ -310,6 +312,30 @@ class Database:
             city_name = cursor.fetchone()
             city_name = city_name[0]
             return city_name
+    def get_user_detail(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """select name,surname,email,isvet,facebook,twitter,youtube,instagram,website,registerdate,photo from users left join socialmedia on users.userid = socialmedia.ownerid where userid = '{0}'""".format(userid)            
+            cursor.execute(statement)
+            db = cursor.fetchone()            
+            user = Profile(db[0],db[1],db[2],db[3],db[4],db[5],db[6],db[7],db[8],db[9],db[10])
+        return user
+    def notification_seen(self,userid):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE NOTIFICATION SET ISSEEN = 1  WHERE OWNERID = '{0}' """.format(userid)
+            cursor.execute(statement)
+    def update_user_photo(self,userid,url):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE USERS SET PHOTO = '{0}' WHERE USERID = '{1}' """.format(url,userid)
+            cursor.execute(statement)
+    
+    def update_notice(self,noticeid,title,date):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE NOTICE SET DESCRIPTION = '{0}', DATE = '{1}' WHERE NOTICEID = '{2}' """.format(title,date,noticeid)
+            cursor.execute(statement)
 
     def get_vets(self):
         with dbapi2.connect(self.url) as connection:

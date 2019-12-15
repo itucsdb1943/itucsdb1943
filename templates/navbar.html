@@ -30,8 +30,15 @@
                     <li class="nav-item ">
                             <a class="nav-link text-dark" href="{{ url_for('foundation_page') }}">Foundations</a>
                     </li>
-                    <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ url_for('forum_page') }}">Forum</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Notices
+                        </a>
+                        <div class="dropdown-menu text-info  bg-dark" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item  text-info " href="{{ url_for('notice_page') }}">Lost Adopts</a>
+                            <a class="dropdown-item  text-info " href="{{ url_for('owner_notice_page') }}">Find Owner</a>
+                        </div>
+
                     </li>
                     <li class="nav-item">
                             <a class="nav-link text-dark" href="{{ url_for('blog_page') }}">Blog</a>

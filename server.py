@@ -30,8 +30,6 @@ UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
 ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
 
-
-
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -41,7 +39,7 @@ import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['UPLOAD_FOLDER_NOTICE '] = UPLOAD_FOLDER_NOTICE 
+app.config['UPLOAD_FOLDER_NOTICE'] = UPLOAD_FOLDER_NOTICE 
 app.app_context()
 
 lm = LoginManager()
@@ -54,6 +52,7 @@ url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql
 
 db = Database(url)
 app.config["db"] = db
+
 
 @app.route("/")
 def home_page():
@@ -71,6 +70,11 @@ def logout_page():
 @app.route("/post")
 def post_page():
     return "Post page"
+
+@app.route("/profile")
+def profile_page():
+    user = db.get_user_detail(session['user_id'])
+    return render_template("profile.html",user = user)
 
 @app.route("/blog")
 def blog_page():
@@ -159,18 +163,39 @@ def vet_evaluation_page(vet_key):
 def foundation_page():
     return render_template("foundation/foundation.html")
 
-@app.route("/notice")
+@app.route("/notice/lost")
 def notice_page():
     db = current_app.config["db"]
-    notices = db.get_notices()    
-    return render_template("notices.html",notices = sorted(notices, reverse=True))
+    notices = db.get_notices(1)    
+    return render_template("notices.html",notices = sorted(notices, reverse=True),header="Lost Pet Notices")
+
+@app.route("/notice/owner")
+def owner_notice_page():
+    db = current_app.config["db"]
+    notices = db.get_notices(0)    
+    return render_template("notices.html",notices = sorted(notices, reverse=True),header="Find Owner Notices")
 
 @app.route("/notice/<int:noticeID>")
 def noticeDetail_page(noticeID):
     db = current_app.config["db"]
     notice = db.get_notice(noticeID)
     print(notice.photoURL)
-    return render_template("noticeDetail.html",notice=notice) 
+    return render_template("noticeDetail.html",notice=notice)
+
+@app.route("/notice/edit/<int:noticeid>",methods=["GET", "POST"])
+def notice_edit_page(noticeid):
+    if request.method == "GET":    
+        return render_template("noticeEdit.html")
+    else:
+        form = request.form
+        title = form['name']
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
+        print(date_time)
+        db.update_notice(noticeid,title,date_time)
+        next_page = request.args.get("next", url_for("notice_page"))
+        return redirect(next_page)
+
+
 
 @app.route("/notice/add", methods=['GET','POST'])
 def noticeAdd_page():
@@ -188,7 +213,7 @@ def noticeAdd_page():
             file.save(os.path.join(app.config['UPLOAD_FOLDER_NOTICE'], filename))
             form_photo = filename
         
-        photoUrl = "../static/" + form_photo
+        photoUrl = "../static/notice/" + form_photo
         title = form['title']
         animalType = form['animalType']
         place = form['place']
@@ -343,7 +368,20 @@ def patigram_add_page():
 @app.route("/notifications")
 def notifications_page():
     notifications = db.get_notifications()
-    return render_template("notifications.html",notifications = notifications)
+    db.notification_seen(session['user_id'])
+    return render_template("notifications.html",notifications = sorted(notifications, reverse=True))
+
+@app.route("/avatar", methods=["GET","POST"])
+def change_avatar():
+    if request.method == "GET":
+        return render_template("avatarChange.html")
+    else:
+        form = request.form
+        photoUrl = form['ck2']
+        print(photoUrl)
+        db.update_user_photo(session['user_id'],photoUrl)
+        return redirect(url_for("profile_page"))
+
 
 @app.route("/notification/add")
 def notification_add_page():

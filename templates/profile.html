@@ -56,28 +56,40 @@
 <div class="container">    
     <div class="row">
         <div class="panel panel-default">
-            <div class="panel-heading">  <h4 >Profile</h4></div>
+            <div class="panel-heading">  <h4 >Profile</h4> <a href = "">Delete Account</a></div> 
                 <div class="panel-body">
                     <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
-                       <img alt="User Pic" src="../static/alp.jpeg" id="profile-image1" class="img-circle img-responsive"> 
+                       <img alt="User Pic" src="{{user.photoURL}}" id="profile-image1" class="img-circle img-responsive">
+                       <a style = "margin-left: 35%; margin-top: 10px" href = "{{ url_for('change_avatar') }}">Change your avatar</a> 
                     </div>
                     <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
                         <div class="container" >
-                            <h2>Alperen Cesur</h2>
+                            <h2>{{user.name}} {{user.surname}}</h2>
+                            {% if user.isVet == 0%}
                             <p>a <b>Pet Owner</b></p>
-                            <p><b>Istanbul</b></p>
+                            {%else%}
+                            <p>a <b>Veteriner</b></p>
+                            {%endif%}
+                            <p><b>{{user.email}}</b></p>
+                            <p><b>{{user.websiteLink}}</b></p>
                         </div>
                         <hr>
-                          <ul class="container details" >  
-                            <a href="#" class="fa fa-facebook"></a>
-                            <a href="#" class="fa fa-twitter"></a>
-                            <a href="#" class="fa fa-google"></a>
-                            <a href="#" class="fa fa-linkedin"></a>
-                            <a href="#" class="fa fa-youtube"></a>
-                            <a href="#" class="fa fa-instagram"></a>
+                          <ul class="container details">
+                            {% if user.facebookLink is not none %}  
+                            <a href="https://{{user.facebookLink}}" class="fa fa-facebook"></a>
+                            {%endif%}
+                            {% if user.twitterLink is not none %} 
+                            <a href="https://{{user.twitterLink}}" class="fa fa-twitter"></a>
+                            {%endif%}
+                            {% if user.youtubeLink is not none %} 
+                            <a href="https://{{user.youtubeLink}}" class="fa fa-youtube"></a>
+                            {%endif%}
+                            {% if user.instagramLink is not none %} 
+                            <a href="https://{{user.instagramLink}}" class="fa fa-instagram"></a>
+                            {%endif%}
                           </ul>
                         <hr>
-                        <div class="col-sm-5 col-xs-6 tital " >Date Of Joining: 11 Nov 2019</div>
+                        <div class="col-sm-5 col-xs-6 tital">Date Of Joining: {{user.registerTime}}</div>
                         </div>
                 </div>
             </div>

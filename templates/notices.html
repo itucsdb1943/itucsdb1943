@@ -13,17 +13,18 @@
 {% block content %}
 
 
-<div class="text-center"> 
-    <button class="btn btn-primary" type="button" >Kayıp Ilanları</button> 
-    <button class ="btn btn-secondary" type="button" >Sahiplendirme Ilanları</button> 
-</div> 
+<h1>{{header}}</h1>
+
 {% for noticeid, notice in notices %}
 <div class="card" style="width: 36rem;">
+  {%if session['user_id'] ==  notice.userID %}
+  <a style = "margin-left: 35%; margin-top: 10px" href = "{{ url_for('notice_edit_page', noticeid=noticeid) }}">Change your avatar</a> 
+  {%endif%}
   <img class="card-img-top" src="{{notice.photoURL}}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{notice.description}}</h5>
     <p class="card-text">Place: {{notice.place}}</p>
-    <p class="card-text">Created: {{notice.date}}</p>
+    <p class="card-text">Last Updated: {{notice.date}}</p>
     <a onclick="window.location.href='{{ url_for('noticeDetail_page', noticeID=noticeid) }}';" class="btn btn-primary">Go Details</a>
   </div>
 </div>
