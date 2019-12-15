@@ -8,7 +8,7 @@
 
 <form class="md-form" action="" method="post" name="patigram_add" enctype="multipart/form-data">
     <ul class="list-group list-group-flush">
-        <li class="list-group-item" > 
+        <li class="list-group-item" id="main_list_three"> 
             <div class="media-body">
                 <img src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" class="img-fluid rounded border border-info rounded" alt="New photo">  
                 <div>
@@ -21,10 +21,7 @@
                 <div class="form-group mt-2 bg-dark border border-2 border-info">
                     <div class="custom-file text-info bg-light border-info">
                         <input type="file" class="custom-file-input text-info " name="image" id="inputGroupFile02">
-                        <label class="custom-file-label label-info text-info bg-dark" for="image" aria-describedby="inputGroupFileAddon02">Choose file</label>
-                    </div>
-                    <div class="form-group-append text-info bg-dark">
-                        <span class="form-group-text text-info bg-dark" id="inputGroupFileAddon02">Upload</span>
+                        <label class="custom-file-label label-info text-info bg-dark" onchange="$('#upload-file-info').html(this.files[0].name)" for="image" aria-describedby="inputGroupFileAddon02">Choose file</label>
                     </div>
                 </div>
 
@@ -42,7 +39,7 @@
                      </div>
                 <div class="form-group mt-2">
                     <label class="text-info" for="description" >Description</label>
-                    <input class="form-control" name="description" id="Description" rows="2"></textarea>
+                    <input class="form-control" name="description" id="Description" rows="2">
                 </div>
                 <div>
                     <p class="text text-info"> Tag </p>

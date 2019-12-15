@@ -1,0 +1,136 @@
+{% extends "navbar.html" %}
+{% block title %} Find Veteriner{%endblock %}
+{% block csslinks %}  <link rel="stylesheet" href="{{ url_for('static', filename='findVet.css') }}"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    .checked {
+        color: orange;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+{%if success%}
+    <h3 class="text-info"> Your ratings are updated succesfully! </h3>
+{%endif%}
+{%if vet%}
+    {% set vet_id = vet.vetid%}
+    <div class="card text-center">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link text-info active" href="{{ url_for('vet_custom_page', vet_key=vet_id) }}">Info</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" href="{{url_for('vet_evaluation_page', vet_key=vet_id)}}">Rating </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body ">
+            <h1 class="card-title text-info">{{vet.vetName}}</h1>
+            <div class="row mt-4 ">
+                <div class="col-sm mb-3">
+                    <h4>Overall Score</h4>
+                    {%for i in range(vet.overallScore)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.overallScore)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.overallScore}}</h4>
+                </div>
+                <div class="col-sm">
+                    <h4>Service Score</h4>
+                    {%for i in range(vet.serviceRate)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.serviceRate)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.serviceRate}}</h4>
+                </div>
+                <div class="col-sm">
+                    <h4>Price Score</h4>
+                    {%for i in range(vet.priceRate)%}
+                        <span class="fa fa-star checked"></span>
+                    {%endfor%}
+                    {%for i in range(5-vet.priceRate)%}
+                        <span class="fa fa-star"></span>
+                    {%endfor%}
+                    <h4>{{vet.priceRate}}</h4>
+                </div>       
+            </div>
+            <div >
+                <i class="fa fa-map-marker text-info" style="font-size:34px; color:#30AFBF;">{{vet.address}}  {{vet.district}}/{{vet.cityName}}  </i>
+            </div>
+            <div class="mt-4">
+                <i class="fa fa-phone" style="font-size:32px; color:green;">{{vet.telephone}}</i>
+            </div>
+            
+        </div>
+    </div>
+    {%if rates%}
+    <h1 class="card-title text-info mt-5">Evaluations </h1>
+        {%for user_id, rate in rates%}
+            <div class="card text-center", style="width:48rem;">
+                <div class="card-body ">
+
+                    <p class="card-title text-left  font-weight-bold" style="font-size:21px;">{{rate.userid}} </p>
+                    <p class="card-title text-left text-info " style="font-size:20px;">{{rate.title}} </p>
+                    <div class="row mt-4 ">
+                        <div class="col-sm mb-3">
+                            <h4>Overall Score</h4>
+                            {%for i in range(rate.overallScore)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.overallScore)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.overallScore}}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <h4>Service Score</h4>
+                            {%for i in range(rate.serviceRate)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.serviceRate)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.serviceRate}}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <h4>Price Score</h4>
+                            {%for i in range(rate.priceRate)%}
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for i in range(5-rate.priceRate)%}
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                            <h4>{{rate.priceRate}}</h4>
+                        </div>       
+                    </div>
+                    {%if rate.comment is not none%}
+                        <div >
+                            <p class="text-left" style="font-size:18px;"> {{rate.comment}}</p>
+                        </div>
+                    {%endif%}
+                    {%if now_user == user_id%}
+                        <form class="form" action="" method="post" name="rating_update">
+                            <div class="form-group ">
+                                <p class="text-info"> You can change your comment</p c>
+                                <input class="form-control "  name="comment" id="comment" rows="1" placeholder="Change your comment"></textarea>
+                                <button type="submit" class="btn btn-outline-info float-right mt-2" name="add"  > Change </button>
+                            </div>
+                        </form>
+                    {%endif%}
+                    <div class="mt-4">
+                        <p style="font-size:10px;"> Date: {{rate.date}} </p>
+                    </div>
+                    
+                </div>
+            </div>
+        {%endfor%}
+    {%endif%}   
+{%endif%}
+{% endblock %}

@@ -10,8 +10,8 @@
        {% if session['logged_in'] %}
        <p class="lead">Welcome</p>
        {% else %}
-       <a href="" class="btn btn-primary">Login</a>       
-       <a href="" class="btn btn-secondary">Register</a>
+       <a href="{{url_for('login_page')}}" class="btn btn-primary">Login</a>       
+       <a href="{{url_for('register_page')}}" class="btn btn-secondary">Register</a>
        {% endif %}
 </section>    
 <section id="gallery">
@@ -23,7 +23,7 @@
         <div class="card-body">
           <h5 class="card-title">Patigram</h5>
           <p class="card-text">You can share photos of your pet and you can see and comment to the other's photos. </p>
-         <a href="" class="btn btn-outline-success btn-sm">Go to Patigram</a>
+         <a href="{{ url_for('patigram_page') }}" class="btn btn-outline-success btn-sm">Go to Patigram</a>
         </div>
        </div>
       </div>
@@ -33,7 +33,7 @@
         <div class="card-body">
           <h5 class="card-title">Blog</h5>
           <p class="card-text">you can find many useful articles for yourself and your pet on the blog. You can also share useful articles yourself. </p>
-         <a href="" class="btn btn-outline-success btn-sm">Go to Blog</a>
+         <a href="{{ url_for('blog_page') }}" class="btn btn-outline-success btn-sm">Go to Blog</a>
         </div>
         </div>
       </div>
@@ -41,9 +41,9 @@
       <div class="card">
         <img src="../static/question.png" alt="" class="card-img-top">
         <div class="card-body">
-          <h5 class="card-title"><br>Forum</h5>
-          <p class="card-text">On the forum page, you can ask your veterinarians or other animal owners to find solutions.</p>
-         <a href="" class="btn btn-outline-success btn-sm">Go to Forum</a>
+          <h5 class="card-title"><br>Notice </h5>
+          <p class="card-text">On the notice page, you can share and see lost pet notices and own pet notice.</p>
+         <a href="{{ url_for('notice_page') }}" class="btn btn-outline-success btn-sm">Go to Notices</a>
         </div>
        </div>
       </div>
