@@ -27,8 +27,13 @@
     {%if vets%}
         {%for vet in vets%}
             {% set vet_id = vet["vetid"] -%}
+            {%if now_user == 1%}
+                <div class="mt-5" style="margin-left:auto; margin-right:auto;">
+                    <button type="button " onclick="window.location.href='{{ url_for('delete_vet', vet_id=vet_id) }}';" class="btn btn-outline-danger" > delete </button>
+                </div>
+            {%endif%} 
+
             {%if vet["score"] == 0 %}
-            
                 <a href="{{ url_for('vet_custom_page', vet_key=vet_id) }}" class="list-group-item list-group-item-action col-7 mt-3" style="  margin-left: auto; margin-right:auto;">
                     <div >
                         <h2 class="text-dark ml-4">{{vet["vetname"]}} </h2>
@@ -49,7 +54,7 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+
                 </a>                
 
             {%elif vet["score"] <= 20 %}
@@ -74,7 +79,7 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+
                 </a>
             {%elif vet["score"] <= 40 %}
                 <a href="{{ url_for('vet_custom_page', vet_key=vet_id) }}" class="list-group-item list-group-item-action col-7 mt-3" style="  margin-left: auto; margin-right:auto;">
@@ -97,7 +102,7 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+              
                 </a>
             {%elif vet["score"] <= 60 %}
                 <a href="{{ url_for('vet_custom_page', vet_key=vet_id) }}" class="list-group-item list-group-item-action col-7 mt-3" style="  margin-left: auto; margin-right:auto;">
@@ -120,7 +125,7 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+                   
                 </a>
             {%elif vet["score"] <= 80 %}
                 <a href="{{ url_for('vet_custom_page', vet_key=vet_id) }}" class="list-group-item list-group-item-action col-7 mt-3" style="  margin-left: auto; margin-right:auto;">
@@ -143,7 +148,7 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+ 
                 </a>
             {%else %}
                 <a href="{{ url_for('vet_custom_page', vet_key=vet_id) }}" class="list-group-item list-group-item-action col-7 mt-3" style="  margin-left: auto; margin-right:auto;">
@@ -166,10 +171,12 @@
                     <div class="mt-3">
                         <i class="fa fa-map-marker text-info" style="font-size:24px; color:#30AFBF;;">District:  {{vet["district"]}} /{{vet["cityname"]}}  </i>
                     </div>
-                    
+ 
                 </a>
             {%endif%}
         {%endfor%}   
+    {%else%}
+        <h1> There is no veteriner</h1>
     {%endif%}
-
+</div>
 {% endblock %}
