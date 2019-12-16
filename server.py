@@ -84,7 +84,6 @@ def login_page():
         user = get_user(username)
         if user is not None:
             if hasher.verify(password, user.password):
-                login_user(user,remember=True,force=True) 
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 print(session['user_id'])
