@@ -21,8 +21,6 @@ from classes.Users import *
 from views import site
 from datetime import datetime as dt
 from datetime import datetime
-
-from dbinit import app
 try:
     from urllib.parse import urlparse as up
 except ImportError:
@@ -42,6 +40,7 @@ ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
 
 app = Flask(__name__)
+app.secret_key = 'super secret key'
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_FOLDER_NOTICE'] = UPLOAD_FOLDER_NOTICE 
@@ -77,7 +76,6 @@ def home_page():
     return render_template("home.html")
 @app.route("/login", methods=['GET','POST'])
 def login_page():
-    app.secret_key = 'super secret key'
     if request.method == "GET":
         return render_template("login.html")
     else:
