@@ -22,7 +22,10 @@ from classes.Users import *
 from views import site
 from datetime import datetime as dt
 from datetime import datetime
-import urllib.parse as up
+try:
+    from urllib.parse import urlparse as up
+except ImportError:
+     from urlparse import urlparse as up
 now = datetime.now()
 
 # import sys
@@ -36,11 +39,6 @@ UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
 ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-     from urlparse import urlparse
-         
 app = Flask(__name__)
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
