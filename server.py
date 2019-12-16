@@ -28,9 +28,9 @@ except ImportError:
 
 now = datetime.now()
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
 
 
