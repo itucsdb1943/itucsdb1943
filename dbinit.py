@@ -2,6 +2,10 @@ import os
 import sys
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
+
+app = Flask(__name__)
+from flask import (Blueprint, Flask, current_app, flash, redirect,
+                   render_template, request, session, url_for)
 import psycopg2 as dbapi2
 import server
 lm = LoginManager()
