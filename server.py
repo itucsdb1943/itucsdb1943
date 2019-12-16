@@ -21,6 +21,8 @@ from classes.Users import *
 from views import site
 from datetime import datetime as dt
 from datetime import datetime
+
+from dbinit import app
 try:
     from urllib.parse import urlparse as up
 except ImportError:
@@ -76,7 +78,6 @@ def home_page():
 @app.route("/login", methods=['GET','POST'])
 def login_page():
     app.secret_key = 'super secret key'
-
     if request.method == "GET":
         return render_template("login.html")
     else:
