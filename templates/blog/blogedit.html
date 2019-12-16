@@ -1,0 +1,46 @@
+{% extends "navbar.html" %}
+{% block meta %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{%endblock%}
+{% block csslinks %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='blogedit.css') }}">
+{% endblock %}
+{% block title %} Blog Edit Page {%endblock %}
+{% block content %}
+<h1 class="title" align = "center">Edit your Blog</h1>
+    <form id="update" class="md-form w3-container w3-card-4" action="" method="post" name="blog_update">
+        <div class = "update"> 
+            <div class="element">  
+            <label>Title</label>
+            <input class="w3-input w3-border" name="title" id="title" for="title" type="text" placeholder="Enter New Title">
+            </div>
+            <div class="form-group mt-4">
+                <label class="text-info" for="tag" >Tag</label>
+            </br>
+                <div class="form-group form-check-inline">
+                    <input class="form-check-input " type="radio" name="blogtag" id="inlineRadio1" value="Cat">
+                    <label class="form-check-label" for="cat">Cat</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="blogtag" id="inlineRadio2" value="Dog">
+                    <label class="form-check-label" for="dog">Dog</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input " type="radio" name="blogtag" id="inlineRadio3" value="Bird" >
+                    <label class="form-check-label" for="bird">Bird</label>
+                 </div>
+                 <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="blogtag" id="inlineRadio4" value="Other" checked >
+                    <label class="form-check-label" for="other">Other</label>
+                 </div>
+            <div class="element">
+            <label>Text</label>
+            <textarea rows="4" cols="50" placeholder="Enter new text" name="text"></textarea> 
+            </div>
+        </div>
+      <button type="submit" class="btn btn-outline-info float-center" id="button1"> Submit </button>
+     </form>
+</div>
+{% endblock %}
+

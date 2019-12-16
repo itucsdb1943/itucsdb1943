@@ -1,25 +1,21 @@
 {% extends "navbar.html" %}
-{% block title %} Blog Page {%endblock %}
-{% block content %}
-<!DOCTYPE html>
-
-<title>W3.CSS Template</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://kit.fontawesome.com/a076d05399.js"></script>
-<!--Get your own code at fontawesome.com-->
+{% block meta %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock%}
+{% block csslinks %}    
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../static/add_button.css">
+{% endblock %}
+{% block title %} Blog Page {%endblock %}
+
+{% block content %}
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 </style>
-<body class="w3-light-grey w3-content" style="max-width:100%">
 
-
-
-<!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:100px">
 
@@ -29,28 +25,45 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
     <div class="w3-container">
     <h1><b>PetWorld BLOG</b></h1>
+    <a href="{{ url_for('blog_add_page') }}">  <button class="button1" >Add Blog</button> </a>
+    <a href="{{ url_for('blogs_delete') }}">  <button class="button1" >Delete Blog</button> </a>
     <div class="w3-section w3-bottombar w3-padding-16">
-      <span class="w3-margin-right">Filter:</span> 
-      <button class="w3-button w3-black">ALL</button>
-      <button class="w3-button w3-white w3-hide-small"><i class="fas fa-cat w3-margin-right"></i>Cat</button>
-      <button class="w3-button w3-white w3-hide-small"><i class="fas fa-dog w3-margin-right"></i>Dog</brightutton>
-      <button class="w3-button w3-white w3-hide-small"><i class="fas fa-dove w3-margin-right"></i>Bird</button>
+      <span class="w3-margin-right">Filter:</span>
+      <form action="" method= "POST" name="tags">
+        <button type="submit" name="all" class="w3-button w3-black" name="all">ALL</input type="button">
+        <button type="submit" name="cat" class="w3-button w3-white w3-hide-small" name="cat"><i class="fas fa-cat w3-margin-right"></i>Cat</button>
+        <button type="submit" name="dog" class="w3-button w3-white w3-hide-small" name="dog"><i class="fas fa-dog w3-margin-right"></i>Dog</button>
+        <button type="submit" name="bird" class="w3-button w3-white w3-hide-small" name=bird><i class="fas fa-dove w3-margin-right"></i>Bird</button>
+        <button type="submit" name="other" class="w3-button w3-white w3-hide-small" name="other"><i class="fas fa-heart w3-margin-right"></i>Other</button>
+      </select>
+      </form>
     </div>
     </div>
   </header>
-  
-  <!-- First Photo Grid-->
-  <div class="w3-row-padding">
-    <div class="w3-third w3-container w3-margin-bottom">
-      <a href = " {{ url_for('blog_info_page') }} "><img src="../../static/playpuppy.png" alt="Norway" style="width:100%" class="w3-hover-opacity"></a>
-      <div class="w3-container w3-white">
-        <a href = " {{ url_for('blog_info_page') }} "><b>10 Fun Games to Play With Your Dog</b></a>
-        <p>Looking for a fun way to keep your dog entertained and out of trouble? Try adding a few games into to your dog’s routine.
-		Playing games with your dog is a great way to keep them active, busy, and out of trouble. And best of all it’s a lot of fun for both you and your dog alike. Not sure where to start? Don’t worry, we’ve got you covered. From using a flirt pole to playing hide & seek, here’s 10 fun games to play with your dog.</p>
-      </div>
-    </div>
 
-<script>
+{% if blogs %}
+  {% for blog_key, blog in blogs %}
+  
+			<div class="w3-row-padding" id="card">
+				<div class="w3-third w3-container w3-margin-bottom">
+				<a href = " {{ url_for('blog_info_page', blog_key = blog_key) }} " name="add"> <img style="width:400px ;heigth:400px" src="{{ url_for('static',filename='blog/') }}{{blog.photo}}"> </a>
+				<div class="w3-container w3-white">
+          <a href = " {{ url_for('blog_info_page' ,blog_key = blog_key) }} " name="add"><b>{{blog.title}}</b></a>
+          
+					<style> 
+						h6{
+							font-style: italic;
+						}
+					</style>
+					<br>
+					<i class="far fa-thumbs-up w3-large">{{blog.likeNum}}</i>
+					&nbsp;
+					<i class="far fa-thumbs-down w3-large">{{blog.dislikeNum}}</i>
+		
+					<h6>{{blog.postedDate}}</h6>
+					</div>
+			</div>	
+			<script>
 // Script to open and close sidebar
 function w3_open() {
     document.getElementById("mySidebar").style.display = "block";
@@ -62,7 +75,8 @@ function w3_close() {
     document.getElementById("myOverlay").style.display = "none";
 }
 </script>
-
-</body>
+	{% endfor %}	
+{% endif %}
+ 
 
 {% endblock %}

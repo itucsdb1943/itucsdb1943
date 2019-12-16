@@ -1,10 +1,12 @@
 class Blog:
-	def __init__(self, blogID, userID, tag, title, text, likeNum, dislikeNum, postedDate):
-		self.blogID = blogID
-		self.userID = userID
-		self.tag = tag 
+	def __init__(self, blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate):
+		self.blogid = blogid
+		self.userid = userid
+		self.blogtag = blogtag 
 		self.title = title
 		self.text = text
 		self.likeNum = likeNum
 		self.dislikeNum = dislikeNum
-		self.postedDate = postedDate
+		self.photo = photo
+		self.postdate = postdate
+		
