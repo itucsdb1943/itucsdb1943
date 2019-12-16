@@ -227,6 +227,7 @@ def vet_custom_page(vet_key):
     vet.serviceRate = int(vet.serviceRate)
     # print(vet.vetName)
     rates = db.get_rates(vet_key)
+
     return render_template("findVet/vet_custom_page.html", vet=vet,rates=rates, now_user = now_user)
 
 
@@ -244,7 +245,7 @@ def vet_evaluation_page(vet_key):
         vet.overallScore = int(vet.overallScore)
         vet.priceRate = int(vet.priceRate)
         vet.serviceRate = int(vet.serviceRate)
-        return render_template("findVet/vet_evaluation_page.html", vet=vet)
+        return redirect(url_for("findVet/vet_evaluation_page.html", vet=vet))
     else:
         form_title = request.form["title"]
         form_comment = request.form["comment"]
@@ -264,7 +265,7 @@ def vet_evaluation_page(vet_key):
         vet.priceRate = int(vet.priceRate)
         vet.serviceRate = int(vet.serviceRate)
         rates = db.get_rates(vet_key)
-        return render_template("findVet/vet_custom_page.html", vet=vet, rates=rates, success="Success",now_user = userid)
+        return redirect(url_for("vet_custom_page",vet_key=vet_key))
 @app.route("/foundation")
 def foundation_page():
     return render_template("foundation/foundation.html")
