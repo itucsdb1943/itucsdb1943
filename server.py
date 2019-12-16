@@ -180,7 +180,6 @@ def blog_page():
         if "all" in request.form:
             blogs = db.get_blogs()
         elif "cat" in request.form:
-            print("burda")
             blogs = db.get_cats()
         elif "dog" in request.form:
             blogs = db.get_dogs()
@@ -211,8 +210,6 @@ def blog_edit(blog_key):
         db = current_app.config["db"]
         old_blog = db.get_blog(blog_key)
         form_titlerr = request.form.get("title", "").strip()
-        # if len(form_titlerr) == 0 and "title" in request.form:
-            # return render_template("blog/blogedit.html", error=1)
         
         form_title = request.form["title"]
         form_blogtag = request.form["blogtag"]
@@ -261,7 +258,7 @@ def blog_add_page():
             photo = filename
     
 
-        user_id = 1
+        user_id = session['user_id']
         blog_id = 4
         likeNum = 0
         dislikeNum = 0

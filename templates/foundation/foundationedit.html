@@ -1,11 +1,14 @@
 {% extends "navbar.html" %}
 {% block title %} Foundation Page {%endblock %}
+{% block csslinks %}
+<link rel="stylesheet" href="{{ url_for('static', filename='foundationedit.css') }}">
+{%endblock%}
 {% block content %}
 <h1 class="title" >Foundations</h1>
     {% if foundations %}
     {% for foundation_key, foundation in foundations %}
     <form  class="form" action="{{ url_for('foundation_update', foundation_key=foundation_key) }}" method="post" name="foundation_list">
-      <table class="table is-striped is-fullwidth">
+      <table class="table is-striped ">
         <tr>
           <td>
             <label class="radio">
@@ -19,9 +22,9 @@
       </table>
 
       {% endfor %}
-      <div class="field is-grouped">
-        <div class="control">
-          <button>Update</button>
+      <div>
+        <div >
+          <button class="button1">Update</button>
         </div>
       </div>
 
