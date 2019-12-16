@@ -176,38 +176,36 @@ def blog_add_page():
 
 @app.route("/findvet", methods=["GET", "POST"])
 def findVet_page():
-    if session['logged_in'] == False:
-       return redirect(url_for("login_page"))
-    else:        
-        db = current_app.config["db"]
-        # db.create_initial_cities() 
-        # db.create_initial_vets() # This function should be used after deleting all vets
-        now_user = session['user_id']
-        if request.method == "GET":
+    print("buraya girdin")       
+    db = current_app.config["db"]
+    # db.create_initial_cities() 
+    # db.create_initial_vets() # This function should be used after deleting all vets
+    now_user = session['user_id']
+    if request.method == "GET":
+        vets = db.get_vets()
+        #db.create_initial_vets()
+        for vet in vets:
+            print(vet["cityname"])
+            score = vet["score"]
+            score = score * 20
+            vet["score"] = score
+        cities = db.get_vet_cities()
+        return render_template("findVet/findVet.html", vets=vets,cities=cities if cities else None, now_user = now_user)
+    else:
+        form_id = request.form["city_select"]
+        if form_id == "0":
             vets = db.get_vets()
-            #db.create_initial_vets()
-            for vet in vets:
+            selected_city = 0
+        else:
+            selected_city = db.get_cityname(form_id)
+            vets = db.get_selected_vets(form_id)
+            for vet in   vets:
                 print(vet["cityname"])
                 score = vet["score"]
                 score = score * 20
                 vet["score"] = score
             cities = db.get_vet_cities()
-            return render_template("findVet/findVet.html", vets=vets,cities=cities if cities else None, now_user = now_user)
-        else:
-            form_id = request.form["city_select"]
-            if form_id == "0":
-                vets = db.get_vets()
-                selected_city = 0
-            else:
-                selected_city = db.get_cityname(form_id)
-                vets = db.get_selected_vets(form_id)
-                for vet in vets:
-                    print(vet["cityname"])
-                    score = vet["score"]
-                    score = score * 20
-                    vet["score"] = score
-                cities = db.get_vet_cities()
-            return render_template("findVet/findVet.html", vets=vets,  cities=cities  if cities else None, selected_city=selected_city, now_user = now_user)
+        return render_template("findVet/findVet.html", vets=vets,  cities=cities  if cities else None, selected_city=selected_city, now_user = now_user)
 
 
 @app.route("/findVet/<int:vet_key>", methods=["GET","POST"])
