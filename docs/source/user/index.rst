@@ -1,8 +1,7 @@
 User Guide
 ==========
 
-**explain how your application works from the user perspective, use
-screenshots whereever appropriate**
+**In this sectio,n we will talk about the usage of website with visual contents.**
 
 **to add a picture, use the following example**::
 
@@ -17,6 +16,5 @@ screenshots whereever appropriate**
    member1
    member2
    member3
-   member4
-   member5
+
    

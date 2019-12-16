@@ -5,13 +5,13 @@ Welcome to itucsdbNN's documentation!
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
-   * Member 5
+   * Alperen Cesur
+   * Bengisu Almıla Pınar
+   * İlknur Çelik
 
-**project description goes here (a few paragraphs)**
+
+
+**PetWorld is a website which consists of beneficial and playful contents. It mainly targets pet owners and pet lovers as users. Users can share their informations, questions and photos; moreover, website has a Veterinary finder that users can share ratings and comment about them to inform pet owners.**
 
 Contents:
 

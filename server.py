@@ -22,9 +22,13 @@ from classes.Users import *
 from views import site
 from datetime import datetime as dt
 from datetime import datetime
+import urllib.parse as up
 now = datetime.now()
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
+
 
 
 #For uploading photo
@@ -371,7 +375,7 @@ def patigram_custom_page(post_key):
     now_user = session['user_id']
     post_user = db.get_post_user(post_key)
     is_user_post = 2
-    now_user = now_user[0]
+    #now_user = now_user[0]
 
     print(type(now_user))
     print(type(post_user))
