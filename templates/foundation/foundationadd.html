@@ -1,0 +1,81 @@
+{% extends "navbar.html" %}
+{% block title %} Foundation Add {%endblock %}
+{%block csslinks%}<link rel="stylesheet" href="{{ url_for('static', filename='foundationadd.css') }}"> {%endblock%}
+{% block content %} 
+<h1 class="title" align="center">Add your Foundation</h1>
+<form class="adding" action="" method="post" name="foundation_add" enctype="multipart/form-data">
+	<div class="body">
+		<div class="form-group mt-3">
+			<label class="text-info" for="foundname" >Foundation name</label>
+			{% if 'foundname' in values.errors %}
+				<p class="help has-background-warning">
+					{{ values.errors['foundname'] }}
+				</p>
+			{% endif %}
+			<hr>
+			<input type="text" class="form-control" id="title" name="foundname" aria-describedby="titleHelp" placeholder="Enter Foundation name" />
+		</div>
+      </br>
+        <div class="form-group mt-4">
+			<label class="text-info" for="donationurl" >Donation</label>
+			<hr>
+			<input type="text" class="form-control" id="donationurl" name="donationurl" aria-describedby="titleHelp" placeholder="Donation" />
+	    </div>
+        </br>
+        <div class="form-group mt-4">
+			<label class="text-info" for="address" >Address</label>
+			<hr>
+			<input type="text" class="form-control" id="address" name="address" aria-describedby="titleHelp" placeholder="Address" />
+	    </div>
+        <div class="form-group mt-2 bg-dark border border-2 border-info">
+			<div class="custom-file text-info bg-light border-info" background="black">
+				<input type="file" class="custom-file-input text-info " name="image" id="inputGroupFile02" required="required" />
+				<label class="custom-file-label label-info" for="image" aria-describedby="inputGroupFileAddon02">Click to choose image</label>
+			</div>
+		</div>
+		</br>
+        <div class="form-group mt-2">
+			<label class="text-info" for="about"  name="about">About</label>
+			  {% if 'about' in values.errors %}
+			<p class="help has-background-warning">
+				{{ values.errors['about'] }}
+			</p>
+			{% endif %}
+			<hr>
+            <textarea rows="4" cols="50" placeholder="About" name="about"></textarea> 
+        </div>
+      
+          </br>      
+       
+     <div class="form-group mt-4">
+        <label class="text-info" for="facebook" >Facebook URL</label>
+        <hr>
+        <input type="text" class="form-control" id="facebook" name="facebook" aria-describedby="titleHelp" placeholder="Facebook URL" />
+     </div>
+     <div class="form-group mt-4">
+        <label class="text-info" for="twitter" >Twitter URL</label>
+        <hr>
+        <input type="text" class="form-control" id="twitter" name="twitter" aria-describedby="titleHelp" placeholder="Twitter URL" />
+     </div>
+     <div class="form-group mt-4">
+        <label class="text-info" for="instagram" >Instagram URL</label>
+        <hr>
+        <input type="text" class="form-control" id="instagram" name="instagram" aria-describedby="titleHelp" placeholder="Instagram URL" />
+     </div>
+   
+     <div class="form-group mt-4">
+        <label class="text-info" for="website" >Website URL</label>
+        <hr>
+        <input type="text" class="form-control" id="website" name="website" aria-describedby="titleHelp" placeholder="Website URL" />
+     </div>
+     <button type="submit" class="btn btn-outline-info float-right" > Submit </button>
+    </div>
+  </form>
+<script>
+    $('.custom-file-input').on('change', function() { 
+        let fileName = $(this).val().split('\\').pop(); 
+        $(this).next('.custom-file-label').addClass("selected").html(fileName); 
+     });
+</script>
+{% endblock %}
+

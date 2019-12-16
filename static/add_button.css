@@ -1,0 +1,39 @@
+.button1 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+.button1:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+#card{ 
+  height: 900px;
+  width: 960px;
+  display:inline-block;
+ }
+
+ #div1{
+  display:inline-block;
+  height: 200px;
+  width: 300px;
+  margin: 10px;
+  color: #FFF;
+
+ }
+ input[type=text]:focus {
+  border: 3px solid #555;
+}

@@ -21,6 +21,9 @@ from classes.Users import *
 from views import site
 from datetime import datetime as dt
 from datetime import datetime
+from classes.blog import *
+from classes.foundation import *
+from classes.foundationcontact import *
 try:
     from urllib.parse import urlparse as up
 except ImportError:
@@ -28,9 +31,9 @@ except ImportError:
 
 now = datetime.now()
 
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 
@@ -38,12 +41,17 @@ now = datetime.now()
 UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
 ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
+UPLOAD_FOLDER_BLOG = join(dirname(realpath(__file__)), 'static/blog')
+UPLOAD_FOLDER_FOUNDATION = join(dirname(realpath(__file__)), 'static/foundation')
+
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_FOLDER_NOTICE'] = UPLOAD_FOLDER_NOTICE 
+app.config['UPLOAD_FOLDER_BLOG'] = UPLOAD_FOLDER_BLOG
+app.config['UPLOAD_FOLDER_FOUNDATION'] = UPLOAD_FOLDER_FOUNDATION
 app.app_context()
 
 lm = LoginManager()
@@ -162,17 +170,137 @@ def other_profile_page(userid):
     user = db.get_user_detail(userid)
     return render_template("othersProfile.html",user = user)
 
-@app.route("/blog")
+@app.route("/blog", methods=["GET", "POST"])
 def blog_page():
-    return render_template("blog/blog.html")
+    db = current_app.config["db"]
+    if request.method == "GET":
+        blogs = db.get_blogs()
+        return render_template("blog/blog.html", blogs=sorted(blogs))
+    else:
+        if "all" in request.form:
+            blogs = db.get_blogs()
+        elif "cat" in request.form:
+            print("burda")
+            blogs = db.get_cats()
+        elif "dog" in request.form:
+            blogs = db.get_dogs()
+        elif "bird" in request.form:
+            blogs = db.get_birds()
+        elif "other" in request.form:
+            blogs = db.get_other()
+        return render_template("blog/blog.html", blogs=sorted(blogs))
 
-@app.route("/blog/bloginfo")
-def blog_info_page():
-	return render_template("blog/bloginfo.html")
+@app.route("/blog/like/<int:blog_key>")
+def blog_like(blog_key):
+    db = current_app.config["db"]
+    db.blog_like(blog_key)
+    return redirect(url_for("blog_info_page",blog_key = blog_key))
 
-@app.route("/blog/add")
+@app.route("/blog/dislike/<int:blog_key>")
+def blog_dislike(blog_key):
+    db = current_app.config["db"]
+    db.blog_dislike(blog_key)
+    return redirect(url_for("blog_info_page", blog_key = blog_key))
+
+ 
+@app.route("/blog/edit/<int:blog_key>", methods=["GET", "POST"])
+def blog_edit(blog_key):
+    if request.method == "GET":
+        return render_template("blog/blogedit.html")
+    else:
+        db = current_app.config["db"]
+        old_blog = db.get_blog(blog_key)
+        form_titlerr = request.form.get("title", "").strip()
+        # if len(form_titlerr) == 0 and "title" in request.form:
+            # return render_template("blog/blogedit.html", error=1)
+        
+        form_title = request.form["title"]
+        form_blogtag = request.form["blogtag"]
+        form_text = request.form["text"]
+
+        if "title" in request.form and "blogtag" in request.form and "text" in request.form:
+            db.update_blog(blog_key, request.form["title"], request.form["blogtag"], request.form["text"])
+        elif "title" in request.form and "blogtag" in request.form:
+            db.update_blog(blog_key, request.form["title"], request.form["blogtag"], old_blog.text)
+        elif "title" in request.form and "text" in request.form:
+            db.update_blog(blog_key, request.form["title"], old_blog.blogtag, request.form["text"])
+        elif "blogtag" in request.form and "text" in request.form:
+            db.update_blog(blog_key, old_blog.title, request.form["blogtag"], request.form["text"])
+        elif "title" in request.form:
+            db.update_blog(blog_key, request.form["title"], old_blog.blogtag, old_blog.text)
+        elif "blogtag" in request.form:
+            db.update_blog(blog_key, old_blog.title, request.form["blogtag"], old_blog.text)
+        elif "text" in request.form:
+            db.update_blog(blog_key, old_blog.title, old_blog.blogtag, request.form["text"])
+        return redirect(url_for("blog_info_page", blog_key = blog_key))
+
+
+@app.route("/blog/<int:blog_key>")
+def blog_info_page(blog_key):
+    db = current_app.config["db"]
+    blog = db.get_blog(blog_key)
+    return render_template("blog/bloginfo.html", blog=blog)
+
+@app.route("/blog/blogadd", methods=["GET","POST"])
 def blog_add_page():
-	return "add blog"
+    if request.method == "GET":
+        values = {"title":"", "text": ""}
+        return render_template("blog/blogadd.html", values=values)
+    else:
+        valid = validate_blog_form(request.form)
+        if not valid:
+            return render_template("blog/blogadd.html", values = request.form)
+        title = request.form.data['title']
+        text = request.form.data["text"]
+        date_time = now.strftime("%d/%m/%y %H:%M:%S")
+        blogtag = request.form["tag"]
+        file = request.files["image"]
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER_BLOG'], filename))
+            photo = filename
+    
+
+        user_id = 1
+        blog_id = 4
+        likeNum = 0
+        dislikeNum = 0
+        blog = Blog(blog_id, user_id, blogtag, title, text, likeNum, dislikeNum, photo,date_time)
+        db = current_app.config["db"]
+        blog_key = db.add_blog(blog)
+        return redirect(url_for("blog_page", blog_key = blog_key))
+
+def validate_blog_form(form):
+	form.data = {}
+	form.errors = {}
+	
+	form_title = form.get("title", "").strip()
+	if len(form_title) == 0:
+		form.errors["title"] = "Title can not be blank."
+	else:
+		form.data["title"] = form_title
+	
+	form_text = form.get("text")
+	if len(form_text) == 0:
+		form.errors["text"] = "Text can not be blank."
+	else:
+		form.data["text"] = form_text
+	return len(form.errors) == 0
+	
+
+
+@app.route("/blog/blogdelete", methods = ["GET", "POST"])
+def blogs_delete():
+    db = current_app.config["db"]
+    if request.method == "GET":
+        blogs = db.get_blogs()
+        return render_template("/blog/blogdelete.html", blogs=sorted(blogs))
+    else:
+        form_blog_keys = request.form.getlist("blog_keys")
+        for form_blog_key in form_blog_keys:
+            db.delete_blog(int(form_blog_key))
+        return redirect(url_for("blog_page"))
+
 
 @app.route("/findvet", methods=["GET", "POST"])
 def findVet_page():
@@ -266,7 +394,93 @@ def vet_evaluation_page(vet_key):
         return redirect(url_for("vet_custom_page",vet_key=vet_key))
 @app.route("/foundation")
 def foundation_page():
-    return render_template("foundation/foundation.html")
+    db = current_app.config["db"]
+    foundations = db.get_foundations()
+    return render_template("foundation/foundation.html", foundations= (foundations)) 
+
+@app.route("/foundation/edit/")
+def foundation_edit():
+    db = current_app.config["db"]
+    foundations = db.get_foundations()
+    return render_template("foundation/foundationedit.html", foundations=sorted(foundations))
+
+@app.route("/foundation/foundationedit/<int:foundation_key>", methods=["GET","POST"])
+def foundation_update(foundation_key):
+    if request.method == "GET":
+        return render_template("foundation/foundationupdate.html")
+    else:
+        db = current_app.config["db"]
+        old_foundation = db.get_foundation(foundation_key)
+        #form_about = request.form["about"]
+        #form_donationurl = request.form["donationurl"]
+
+        if "about" in request.form and "donationurl" in request.form:
+            db.update_foundation(foundation_key, request.form["about"], request.form["donationurl"])
+        elif "about" in request.form:
+            db.update_foundation(foundation_key, request.form["about"], old_foundation.donationurl)
+        elif "donationurl" in request.form:
+            db.update_foundation(foundation_key, old_foundation.about, request.form["donationurl"])
+        return redirect(url_for("foundation_update", foundation_key = foundation_key))
+
+@app.route("/foundation/foundationadd", methods=["GET","POST"])
+def foundation_add_page():
+    if request.method == "GET":
+        values = {"foundname":"", "about":""}
+        return render_template("foundation/foundationadd.html", values=values)
+    else:
+        valid = validate_foundation_form(request.form)
+        if not valid:
+            return render_template("foundation/foundationadd.html", values =request.form)
+        
+        foundname = request.form["foundname"]
+        donationurl = request.form["donationurl"]
+        file = request.files["image"]
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER_FOUNDATION'], filename))
+            photo = filename
+        about = request.form["about"]
+        address = request.form["address"]
+        facebook =request.form["facebook"]
+        twitter = request.form["twitter"]
+        instagram = request.form["instagram"]
+        website =request.form["website"]
+        
+        foundid = 4
+        foundation = Foundation(foundid, photo, donationurl, about, foundname, address, facebook, twitter, instagram,website)
+        db = current_app.config["db"]
+        foundation_key = db.add_foundation(foundation)
+        return redirect(url_for("foundation_page", foundation_key = foundation_key))
+
+def validate_foundation_form(form):
+    form.data = {}
+    form.errors = {}
+	
+    form_foundname = form.get("foundname", "").strip()
+    if len(form_foundname) == 0:
+        form.errors["foundname"] = "Foundation name can not be blank."
+    else:
+        form.data["foundname"] = form_foundname
+	
+    form_about = form.get("about")
+    if len(form_about) == 0:
+        form.errors["about"] = "About can not be blank."
+    else:
+        form.data["about"] = form_about
+    return len(form.errors) == 0
+
+@app.route("/foundation/foundationdelete", methods=["GET", "POST"])
+def foundation_delete():
+    db = current_app.config["db"]
+    if request.method == "GET":
+        foundations = db.get_foundations()
+        return render_template("/foundation/foundationdelete.html", foundations=(foundations))
+    else:
+        form_foundation_keys = request.form.getlist("foundation_keys")
+        for form_foundation_key in form_foundation_keys:
+            db.delete_foundation(int(form_foundation_key))
+        return redirect(url_for("foundation_page"))
+
 
 @app.route("/notice/lost")
 def notice_page():
@@ -512,4 +726,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
 
     app.run(debug=True)
-    
+

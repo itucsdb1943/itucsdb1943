@@ -1,0 +1,70 @@
+{% extends "navbar.html" %}
+{% block title %}Edit Blog{% endblock %}
+{% block csslinks %}    <link rel="stylesheet" href="{{ url_for('static', filename='blog_add.css') }}"> {% endblock %}
+{% block content %}
+<h1 class="title" align = "center">Add your Blog</h1>
+<form class="adding" action="" method="post" name="blog_add" enctype="multipart/form-data">
+	<div class="body">
+			<div class="form-group mt-3">
+			<label class="text-info" for="title" >Tittle</label>
+			{% if 'title' in values.errors %}
+				<p class="help has-background-warning">
+					{{ values.errors['title'] }}
+				</p>
+			{% endif %}
+			<hr>
+			<input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" placeholder="Enter Title" />
+		</div>
+      </br>
+        <div class="form-group mt-4">
+			<label class="text-info" for="tag" >Tag</label>
+			<hr>
+			<div class="form-group form-check-inline">
+				<input class="form-check-input " type="radio" name="tag" id="inlineRadio1" value="Cat">
+				<label class="form-check-label" for="cat">Cat</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="tag" id="inlineRadio2" value="Dog">
+				<label class="form-check-label" for="dog">Dog</label>
+		    </div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input " type="radio" name="tag" id="inlineRadio3" value="Bird" >
+				<label class="form-check-label" for="bird">Bird</label>
+			 </div>
+			 <div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="tag" id="inlineRadio4" value="Other" checked >
+				<label class="form-check-label" for="other">Other</label>
+		     </div>
+        </div>
+        </br>
+        <div class="form-group mt-2 bg-dark border border-2 border-info">
+			<div class="custom-file text-info bg-light border-info" background="black">
+				<input type="file" class="custom-file-input text-info " name="image" id="inputGroupFile02" required="required" />
+				<label class="custom-file-label label-info" for="image" aria-describedby="inputGroupFileAddon02">Click to choose image</label>
+			</div>
+		</div>
+		</br>
+        <div class="form-group mt-2">
+			<label class="text-info" for="text"  >Text</label>
+			  {% if 'text' in values.errors %}
+			<p class="help has-background-warning">
+				{{ values.errors['text'] }}
+			</p>
+			{% endif %}
+			<hr>
+            <textarea rows="4" cols="50" placeholder="Enter your blog text" name="text"></textarea>
+      
+          </br>      
+        <button type="submit" class="btn btn-outline-info float-right" > Submit </button>
+     </div>
+  </form>
+
+<script>
+    $('.custom-file-input').on('change', function() { 
+        let fileName = $(this).val().split('\\').pop(); 
+        $(this).next('.custom-file-label').addClass("selected").html(fileName); 
+     });
+</script>
+
+  
+{% endblock %}

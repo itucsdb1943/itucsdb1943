@@ -9,6 +9,12 @@ from classes.notices import Notice
 import psycopg2 as dbapi2
 from classes.veteriner import Veteriner
 from classes.rate import *
+
+from classes.foundationcontact import *
+import sys
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
+
 from classes.Notification import *
 from classes.Profile import *
 from flask import session
@@ -27,10 +33,8 @@ class Database:
         self.foundations = {}
         self._last_foundation_key = 0
         self.blogs = {}
+        self._last_blog_key = 0
         self.last_blog_key = 0
-    
-    
-
 
     def add_post(self, post):
         with dbapi2.connect(self.url) as connection:
@@ -275,52 +279,171 @@ class Database:
             for name, userid, surname, comment in cursor:
                 comments.append({"name": name, "userid":userid, "surname": surname, "comment": comment}) 
         return comments
+
     def add_foundation(self, foundation):
-        self.last_foundation_key += 1
-        self.movies[self._last_foundation_key] = foundation
-        return self._last_foundation_key
-		
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection. cursor()
+            
+            statement = """INSERT INTO FOUNDATIONCONTACT ( FACEBOOK, TWITTER, INSTAGRAM, WEBSITE)
+                        VALUES ( %s,%s,%s,%s);
+                    """
+            cursor.execute(statement, (foundation.facebook, foundation.twitter, foundation.instagram, foundation.website))
+            query = """SELECT FOUNDID FROM FOUNDATIONCONTACT WHERE (FACEBOOK = %s)"""
+            cursor.execute(query, (foundation.facebook,))
+            nowid = cursor.fetchone()
+            nowid = nowid[0]
+
+            query = """INSERT INTO FOUNDATION (FOUNDID,PHOTO, DONATIONURL, ABOUT, FOUNDNAME, ADDRESS)
+                    VALUES (%s, %s,%s,%s,%s,%s);
+                    """
+            cursor.execute(query, (nowid, foundation.photo, foundation.donationurl, foundation.about, foundation.foundname, foundation.address))
+
+
+            foundation_key = cursor.lastrowid
+        return foundation_key
+
     def delete_foundation(self, foundation_key):
-        if foundation_key in self.foundations:
-            del self.foundations[foundation_key]
-	
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """DELETE FROM FOUNDATION WHERE FOUNDID = '{0}'""".format(foundation_key)
+            cursor.execute(query)
+            connection.commit()
+
     def get_foundation(self, foundation_key):
-        foundation = self.foundations.get(foundation_key)
-        if foundation is None:
-            return None
-        foundation_ = Foundation(foundation.foundID, foundation.photo, foundation.donationURL, foundation.facebookLink, foundation.twitterLink, foundation.youtubeLink, foundation.instagramLink, foundation.about, foundation.name)
-        return foundation_
-	
-    def get_foundation(self):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT FOUNDATION.FOUNDID, PHOTO, DONATIONURL, ABOUT, FOUNDNAME, ADDRESS, FACEBOOK, TWITTER, INSTAGRAM, WEBSITE FROM FOUNDATION LEFT JOIN FOUNDATIONCONTACT ON (FOUNDATION.FOUNDID = FOUNDATIONCONTACT.FOUNDID) WHERE (FOUNDATION.FOUNDID = %s)"""
+            cursor.execute(query, (foundation_key,))
+            foundid, photo, donationurl, about, foundname, address, facebook, twitter, instagram, website = cursor.fetchone()
+            foundation = Foundation(foundid, photo, donationurl, about, foundname, address, facebook, twitter, instagram, website)
+            return foundation
+        return None
+
+    def get_foundations(self):
         foundations = []
-        for foundation_key, foundation in self.foundations.items():
-            foundation_ = Foundation(foundation.self, foundation.foundID, foundation.photo, foundation.donationURL, foundation.facebookLink, foundation.twitterLink, foundation.youtubeLink, foundation.instagramLink, foundation.about, foundation.name)
-            foundations.append((foundation_key, foundation_))
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT FOUNDATION.FOUNDID, PHOTO, DONATIONURL, ABOUT, FOUNDNAME, ADDRESS, FOUNDATIONCONTACT.FACEBOOK, FOUNDATIONCONTACT.TWITTER, FOUNDATIONCONTACT.INSTAGRAM, FOUNDATIONCONTACT.WEBSITE FROM FOUNDATION LEFT JOIN FOUNDATIONCONTACT 
+                    ON (Foundation.FOUNDID = FoundationContact.FOUNDID) """
+            cursor.execute(query)
+            connection.commit()
+            for foundid, photo, donationurl, about, foundname, address, facebook, twitter, instagram, website in cursor:
+                foundations.append((foundid, Foundation(foundid, photo, donationurl, about, foundname, address, facebook, twitter, instagram,website)))
         return foundations
 
+    def update_foundation(self, foundid, about, donationurl):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE FOUNDATION 
+                            SET ABOUT = %s,
+                            DONATIONURL = %s
+                            WHERE (FOUNDID =%s);
+                        """
+            cursor.execute(statement, (about,donationurl, foundid))
+            connection.commit()
     def add_blog(self, blog):
-        self._last_blog_key += 1
-        self.blogs[self.last_blog_key] = blog
-        return self.last_blog_key
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """INSERT INTO BLOG (USERID, BLOGTAG, TITLE, TEXT, LIKENUMBER, DISLIKENUMBER, PHOTO,POSTDATE) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"""
+            cursor.execute(query, (blog.userid, blog.blogtag, blog.title, blog.text, blog.likeNum, blog.dislikeNum, blog.photo, blog.postdate))
+            connection.commit()
+            blog_key = cursor.lastrowid
+        return blog_key
    
-    def delete_blog(self, blogn_key):
-        if blog_key in self.blogs:
-            del self.blogs[blog_key]
+    def delete_blog(self, blog_key):
+        with dbapi2.connect(self.url) as  connection:
+            cursor = connection.cursor()
+            query = """DELETE FROM BLOG WHERE BLOGID = '{0}' """.format(blog_key)
+            cursor.execute(query)
+            connection.commit()
+
+    def blog_like(self, blog_key):
+        with dbapi2.connect(self.url) as  connection:
+            cursor = connection.cursor()
+            statement = """UPDATE BLOG
+                                SET LIKENUMBER = LIKENUMBER + 1
+                                WHERE (BLOGID=%s)"""
+            cursor.execute(statement, (blog_key,))
+            connection.commit()
+
+    def blog_dislike(self, blog_key):
+        with dbapi2.connect(self.url) as  connection:
+            cursor = connection.cursor()
+            statement = """UPDATE BLOG
+                                SET DISLIKENUMBER = DISLIKENUMBER + 1
+                                WHERE (BLOGID=%s)"""
+            cursor.execute(statement, (blog_key,))
+            connection.commit()
+
+    def get_cats(self):
+        catblogs = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT * FROM BLOG WHERE BLOG.BLOGTAG = 'Cat'"""
+            cursor.execute(statement)
+            for blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate in cursor:
+                catblogs.append((blogid, Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)))
+            return catblogs
     
+    def get_dogs(self):
+        dogblogs = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT * FROM BLOG WHERE BLOG.BLOGTAG = 'Dog'"""
+            cursor.execute(statement)
+            for blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate in cursor:
+                dogblogs.append((blogid, Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)))
+            return dogblogs
+    
+    def get_birds(self):
+        birdblogs = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT * FROM BLOG WHERE BLOG.BLOGTAG = 'Bird'"""
+            cursor.execute(statement)
+            for blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate in cursor:
+                birdblogs.append((blogid, Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)))
+            return birdblogs
+
+    def get_other(self):
+        otherblogs = []
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """SELECT * FROM BLOG WHERE BLOG.BLOGTAG = 'Other'"""
+            cursor.execute(statement)
+            for blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate in cursor:
+                otherblogs.append((blogid, Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)))
+            return otherblogs
+
     def get_blog(self, blog_key):
-        blog = self.blogs.get(blog_key)
-        if blog is None:
-            return None
-        blog_ = Blog(blog.blogID, blog.userID, blog.tag, blog.title, blog.text, blog.likeNum, blog.dislikeNum, blog.postedDate)
-        return blog_
+       with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT * FROM BLOG WHERE BLOGID = '{0}' """.format(blog_key)
+            cursor.execute(query)
+            blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate = cursor.fetchone()
+            blog = Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)
+            return blog
+       return None
 	
     def get_blogs(self):
         blogs = []
-        for blog_key, blog in self.blogs.items():
-            blog_ = Blog(blog.blogID, blog.userID, blog.tag, blog.title, blog.text, blog.likeNum, blog.dislikeNum, blog.postedDate)
-            blogs.append((blog_key, blog_))
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            query = """SELECT * FROM BLOG ORDER BY POSTDATE"""
+            cursor.execute(query)
+            for blogid,userid,blogtag,title,text,likeNum,dislikeNum,photo,postdate in cursor:
+                blogs.append((blogid, Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)))
         return blogs
 
+    def update_blog(self, blogid, title, blogtag, text):
+        with dbapi2.connect(self.url) as connection:
+            cursor = connection.cursor()
+            statement = """UPDATE BLOG
+                            SET TITLE = %s, 
+                            BLOGTAG = %s, 
+                            TEXT = %s
+                            WHERE BLOGID = %s;"""
+            cursor.execute(statement, (title, blogtag, text, blogid))
     def create_initial_vets(self):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()

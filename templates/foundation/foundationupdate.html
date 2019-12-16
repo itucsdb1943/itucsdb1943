@@ -1,0 +1,25 @@
+{% extends "navbar.html" %}
+{% block meta %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{%endblock%}
+{% block csslinks %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+{% endblock %}
+{% block title %} Foundation Edit Page {%endblock %}
+{% block content %}
+<h1 class="title" align = "center">Edit your Foundation</h1>
+    <form id="update" class="md-form w3-container w3-card-4" action="" method="post" name="foundation_update">
+        <div class = "update"> 
+            <div class="element">  
+            <label>About</label>
+            <input class="w3-input w3-border" name="about" id="about" for="about" type="text" placeholder="Enter New About Text">
+            </div>
+            <div class="element">
+            <label>Donation URL</label>
+            <input class="w3-input w3-border" name="donationurl" for="donationurl" type="text" placeholder="Enter New Donation URL">
+            </div>
+        </div>
+      <button type="submit" class="btn btn-outline-info float-center" id="button1"> Submit </button>
+     </form>
+</div>
+{% endblock %}
