@@ -7,18 +7,6 @@ CREATE TABLE Post (
     TITLE VARCHAR(27) NOT NULL,
     POSTTAG VARCHAR(20)
 )
-delete from comment
-where postid IN (SELECT POSTID FROM POST WHERE POSTTAG = 'Bird');
-DELETE FROM LIKES
-WHERE POSTID IN (SELECT POSTID FROM POST WHERE POSTTAG = 'Bird');
-delete from post
-where posttag = 'Bird';
-
-INSERT INTO Post(USERID, POSTDATE, PHOTOURL, TITLE, POSTTAG )
-VALUES (1,'20/11/2019', 'photourl', 'This is Şatok', 'Cat' );
-
-INSERT INTO Post(USERID, POSTDATE, PHOTOURL, TITLE, POSTTAG )
-VALUES (1,'20/11/2019', 'photourl', 'This is Minnos', 'Cat' );
 
 
 CREATE TABLE Likes(
@@ -57,10 +45,6 @@ CREATE TABLE CITY(
     CITYID INTEGER PRIMARY KEY,
     CITYNAME VARCHAR(30)
 )
-INSERT INTO CITY(CITYID, CITYNAME) VALUES(7, 'Antalya');
-INSERT INTO CITY(CITYID, CITYNAME) VALUES(34, 'İstanbul');
-
-
 
 CREATE TABLE Users (
     USERID SERIAL PRIMARY KEY,
@@ -72,10 +56,6 @@ CREATE TABLE Users (
     PASSWORD VARCHAR(120),
     REGISTERDATE VARCHAR(40)
 )
-
-INSERT INTO Users(NAME, SURNAME, EMAIL,ISVET,PASSWORD )
-VALUES ('Bengisu', 'Pinar', 'almla671@gmail.com',0,'123456');
-
 
 
 CREATE TABLE ForumPost (
@@ -164,11 +144,4 @@ CREATE TABLE FoundationContact(
    WEBSITE VARCHAR(255)
 )
 
-select userid,name,surname,email,isvet,password,facebook,twitter,youtube,instagram,website from users left join socialmedia on users.userid = socialmedia.ownerid
-
-SELECT FOUNDID, PHOTO, DONATIONURL, ABOUT, FOUNDNAME, ADDRESS, FACEBOOK, TWITTER, INSTAGRAM, YOUTUBE, WEBSITE FROM Foundation LEFT JOIN FoundationContact on Foundation.FOUNDID = FoundationContact.FOUNDID
-
-create notice:
-INSERT INTO NOTICE (USERID,ANIMALTYPE,AGE,STRAIN,GENDER,PHOTOURL,ISLOST,DESCRIPTION,CONTACT,DATE)
-VALUES ()
 

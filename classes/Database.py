@@ -307,6 +307,8 @@ class Database:
             cursor = connection.cursor()
             query = """DELETE FROM FOUNDATION WHERE FOUNDID = '{0}'""".format(foundation_key)
             cursor.execute(query)
+            query = """DELETE FROM FOUNDATIONCONTACT WHERE FOUNDID = '{0}'""".format(foundation_key)
+            cursor.execute(query)
             connection.commit()
 
     def get_foundation(self, foundation_key):
