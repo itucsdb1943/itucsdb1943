@@ -510,7 +510,6 @@ def notification_add_page():
 
 if __name__ == "__main__":
     app.secret_key = 'super secret key'
-    lm.init_app(app)
-    lm.login_view = "login_page"
+
     app.run(debug=True)
     
