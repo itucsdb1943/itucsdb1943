@@ -39,7 +39,6 @@ UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/patigram')
 ALLOWED_EXTENSIONS = {  'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER_NOTICE = join(dirname(realpath(__file__)), 'static/notice')
 
-         
 app = Flask(__name__)
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
