@@ -203,6 +203,7 @@ def findVet_page():
                 print(vet["cityname"])
                 score = vet["score"]
                 score = score * 20
+                score = int(score)
                 vet["score"] = score
             cities = db.get_vet_cities()
         return render_template("findVet/findVet.html", vets=vets,  cities=cities  if cities else None, selected_city=selected_city, now_user = now_user)
@@ -224,8 +225,7 @@ def vet_custom_page(vet_key):
     vet.priceRate = int(vet.priceRate)
     vet.serviceRate = int(vet.serviceRate)
     # print(vet.vetName)
-    rates = db.get_rates(vet_key)
-
+    rates = db.get_rates(vet_key) 
     return render_template("findVet/vet_custom_page.html", vet=vet,rates=rates, now_user = now_user)
 
 
@@ -243,7 +243,7 @@ def vet_evaluation_page(vet_key):
         vet.overallScore = int(vet.overallScore)
         vet.priceRate = int(vet.priceRate)
         vet.serviceRate = int(vet.serviceRate)
-        return redirect(url_for("findVet/vet_evaluation_page.html", vet=vet))
+        return render_template("findVet/vet_evaluation_page.html", vet=vet)
     else:
         form_title = request.form["title"]
         form_comment = request.form["comment"]
