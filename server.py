@@ -12,7 +12,6 @@ from flask_login import (LoginManager, current_user, login_required,
 from passlib.apps import custom_app_context as pwd_context
 from passlib.hash import pbkdf2_sha256 as hasher
 from werkzeug.utils import secure_filename
-
 from classes.comment import *
 from classes.Database import Database
 from classes.forms import *
@@ -26,11 +25,12 @@ try:
     from urllib.parse import urlparse as up
 except ImportError:
      from urlparse import urlparse as up
+
 now = datetime.now()
 
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 
@@ -52,7 +52,7 @@ def load_user(id):
     return get_user(id)
 
 url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
-
+ 
 db = Database(url)
 app.config["db"] = db
 
@@ -317,7 +317,7 @@ def noticeAdd_page():
         form = request.form
         file = request.files["image"]
         if file.filename == '':           
-            errors["file"] = "An image is necessary for patigram post, please give one."
+            errors["file"] = "An image is necessary for notice, please give one."
             return  render_template("patigram/patigramAdd.html", errors=errors)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -514,22 +514,9 @@ def change_avatar():
 def notification_add_page():
     return "not add"
 
-
-
 if __name__ == "__main__":
     app.secret_key = 'super secret key'
     lm.init_app(app)
     lm.login_view = "login_page"
     app.run(debug=True)
-    print("geldik buralara3")
-    # session.pop('logged_in',None)
-    #session['logged_in'] = False
-    up.uses_netloc.append("postgres")
-    print("geldik buralara3")
-    url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
-    conn = psycopg2.connect(database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-    )
+    

@@ -1,4 +1,6 @@
 # coding=utf-8
+import os
+
 from classes.post import Post
 from classes.comment import Comment
 from classes.foundation import Foundation
@@ -10,6 +12,12 @@ from classes.rate import *
 from classes.Notification import *
 from classes.Profile import *
 from flask import session
+try:
+    from urllib.parse import urlparse as up
+except ImportError:
+     from urlparse import urlparse as up
+url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"
+
 
 class Database:
     def __init__(self, url):
@@ -535,3 +543,16 @@ class Database:
             cursor = connection.cursor()
             statement = """DELETE FROM USERS WHERE USERID = '{0}'""".format(userid)
             cursor.execute(statement)
+
+if __name__ == "__main__":
+    # session.pop('logged_in',None)
+    #session['logged_in'] = False
+    #up.uses_netloc.append("postgres")
+    print("geldik buralara3")
+    url = up.urlparse(os.environ["postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql.com:5432/rgkksygg"])
+    conn = dbapi2.connect(database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+    )
