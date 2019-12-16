@@ -85,10 +85,8 @@ def login_page():
         if user is not None:
             if hasher.verify(password, user.password):
                 login_user(user,remember=True,force=True) 
-                print(current_user)
-                print("you logged")
                 session['logged_in'] = True
-                session['user_id'] = current_user.id
+                session['user_id'] = user.id
                 print(session['user_id'])
                 flash("You have logged in.")
                 next_page = request.args.get("next", url_for("home_page"))
