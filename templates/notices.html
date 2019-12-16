@@ -18,7 +18,7 @@
 {% for noticeid, notice in notices %}
 <div class="card" style="width: 36rem;">
   {%if session['user_id'] ==  notice.userID %}
-  <a style = "margin-left: 35%; margin-top: 10px" href = "{{ url_for('notice_edit_page', noticeid=noticeid) }}">Change your avatar</a> 
+  <a style = "margin-left: 35%; margin-top: 10px" href = "{{ url_for('notice_edit_page', noticeid=noticeid) }}">Update Your Notice</a> 
   {%endif%}
   <img class="card-img-top" src="{{notice.photoURL}}" alt="Card image cap">
   <div class="card-body">

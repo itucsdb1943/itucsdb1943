@@ -72,9 +72,6 @@ def delete_user():
 
 @app.route("/")
 def home_page():
-    db.get_notifications()
-    print(current_user)
-    print("geldik buralara")
     return render_template("home.html")
 @app.route("/login", methods=['GET','POST'])
 def login_page():
