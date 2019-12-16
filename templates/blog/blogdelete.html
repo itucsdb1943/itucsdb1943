@@ -1,0 +1,33 @@
+{% extends "navbar.html" %}
+{% block title %} Blog Page {%endblock %}
+{% block content %}
+
+<h1 class="title" align = "center" >Blogs</h1>
+
+    {% if blogs %}
+    <form  class="form" action="" method="post" name="blog_list">
+      <table class="table is-striped is-fullwidth">
+        {% for blog_key, blog in blogs %}
+        <tr>
+          <td>
+            <label class="checkbox">
+              <input type="checkbox" name="blog_keys" value="{{ blog_key }}"/>
+            </label>
+            <a href="{{ url_for('blog_info_page', blog_key=blog_key) }}">
+              {{ blog.title }}
+              {% if blog.blogtag %} ({{ blog.blogtag }}) {% endif %}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-danger is-small">Delete</button>
+        </div>
+      </div>
+    </form>
+    {% endif %}
+{% endblock %}
+

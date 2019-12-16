@@ -1,11 +1,12 @@
-class Foundation:
-    def __init__(self, foundID, photo, donationURL, facebookLink, twitterLink, youtubeLink, instagramLink, about, name):
-        self.foundID = foundID
+class Foundation():
+    def __init__(self, foundid, photo, donationurl, about, foundname, address, facebook, twitter,instagram, website):
+        self.foundid = foundid
         self.photo = photo
-        self.donationURL = donationURL
-        self.facebookLink = facebookLink
-        self.twitterLink = twitterLink
-        self.youtubeLink = youtubeLink
-        self.instagramLink = instagramLink
+        self.donationurl = donationurl
         self.about = about
-        self.name = name
+        self.foundname = foundname
+        self.address = address
+        self.facebook = facebook
+        self.twitter = twitter
+        self.instagram = instagram
+        self.website = website

@@ -1,5 +1,42 @@
 {% extends "navbar.html" %}
+{% block meta %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock%}
+{% block csslinks %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="../../static/bloginfo.css">
+{% endblock %}
 {% block title %} Blog Page {%endblock %}
 {% block content %}
+{% set blog_key=blog.blogid -%}
+<div class="w3-section w3-padding-16 w3-round w3-right">
+    <a href="{{url_for('blog_edit', blog_key = blog_key)}}"><button class="w3-button w3-green">Update</button></a>
+</div>
+
+<ul class="rounded">
+    <li id="mainlist">
+        <div>
+            <div>
+                <h1 class="title"><b>{{blog.title}}</b></h1>
+                <h3 class="blogtag"><i>#{{blog.blogtag}}</i></h3>
+            </div>
+                <div class="box">
+                    <img src="{{ url_for('static', filename ='blog/')}}{{blog.photo}}" alt= "{{ url_for('static', filename ='blog/')}}{{blog.photo}}"  class="photo" >
+                
+                     
+                </div class="box">
+                
+                <p>
+                    {{blog.text}}
+                </p>
+
+        </div>
+        
+        <div class="like">
+            
+            
+            <button class="w3-button w3-round" onclick="window.location.href='{{ url_for('blog_like', blog_key=blog_key) }}';" id="button">Like {{blog.likeNum}}</button>
+            <button class="w3-button w3-round" onclick="window.location.href='{{ url_for('blog_dislike', blog_key=blog_key) }}';" id="button1">Dislike {{blog.dislikeNum}}</button>
+        </div>
+    </li>
+</ul>
 
 {% endblock %}

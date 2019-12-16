@@ -1,0 +1,30 @@
+{% extends "navbar.html" %}
+{% block title %} Foundation Page {%endblock %}
+{% block content %}
+<h1 class="title" >Foundations</h1>
+    {% if foundations %}
+    {% for foundation_key, foundation in foundations %}
+    <form  class="form" action="{{ url_for('foundation_update', foundation_key=foundation_key) }}" method="post" name="foundation_list">
+      <table class="table is-striped is-fullwidth">
+        <tr>
+          <td>
+            <label class="radio">
+              <input type="radio" name="foundation_keys" value="{{ foundation_key }}"/>
+            </label>
+            <a href="{{ url_for('foundation_page', foundation_key=foundation_key) }}">
+                {{ foundation.foundname }}
+              </a>
+          </td>
+        </tr>
+      </table>
+
+      {% endfor %}
+      <div class="field is-grouped">
+        <div class="control">
+          <button>Update</button>
+        </div>
+      </div>
+
+    </form>
+    {%endif%}
+{% endblock %}
