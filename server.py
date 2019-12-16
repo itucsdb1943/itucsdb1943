@@ -1,28 +1,34 @@
 # coding=utf-8
 import os
-from os.path import join, dirname, realpath
-from werkzeug.utils import secure_filename
-from flask import Flask, render_template,request,session
+import sys
+from datetime import datetime as dt
+from os.path import dirname, join, realpath
+
 import psycopg2 as dbapi2
-from flask import current_app, redirect, Flask,url_for,Blueprint,flash
-from views import site
-from flask_login import LoginManager,login_required,current_user,login_user
-from classes.post import *
-from classes.Database import Database
-from flask_login import logout_user
+from flask import (Blueprint, Flask, current_app, flash, redirect,
+                   render_template, request, session, url_for)
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
 from passlib.apps import custom_app_context as pwd_context
 from passlib.hash import pbkdf2_sha256 as hasher
-from classes.Users import *
-from classes.forms import *
+from werkzeug.utils import secure_filename
+
 from classes.comment import *
+from classes.Database import Database
+from classes.forms import *
+from classes.post import *
 from classes.rate import *
+from classes.Users import *
+from views import site
 from datetime import datetime as dt
 from datetime import datetime
 import urllib.parse as up
 now = datetime.now()
+
 # import sys
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
+
 
 
 #For uploading photo
@@ -35,7 +41,6 @@ try:
 except ImportError:
      from urlparse import urlparse
          
-import psycopg2
 app = Flask(__name__)
 app.register_blueprint(site)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -53,6 +58,19 @@ url = "postgres://rgkksygg:BO8pGAZa6BqFR84mF43EMNNljm3jRnM5@rogue.db.elephantsql
 db = Database(url)
 app.config["db"] = db
 
+@app.route("/delete")
+def delete_user():
+    db.delete_notifications(session['user_id'])
+    db.delete_notices(session['user_id'])
+    db.delete_socialMedia(session['user_id'])
+    db.delete_user_comments(session['user_id'])
+    db.delete_user_likes(session['user_id'])
+    db.delete_post(session['user_id'])
+    db.delete_user_rating(session['user_id'])
+    db.delete_user(session['user_id'])
+    session['logged_in'] = False
+    next_page = request.args.get("next", url_for("home_page"))
+    return redirect(next_page)
 
 @app.route("/")
 def home_page():
@@ -165,35 +183,38 @@ def blog_add_page():
 
 @app.route("/findvet", methods=["GET", "POST"])
 def findVet_page():
-    db = current_app.config["db"]
-    # db.create_initial_cities() 
-    # db.create_initial_vets() # This function should be used after deleting all vets
-    now_user = session['user_id']
-    if request.method == "GET":
-        vets = db.get_vets()
-        #db.create_initial_vets()
-        for vet in vets:
-            print(vet["cityname"])
-            score = vet["score"]
-            score = score * 20
-            vet["score"] = score
-        cities = db.get_vet_cities()
-        return render_template("findVet/findVet.html", vets=vets,cities=cities if cities else None, now_user = now_user)
-    else:
-        form_id = request.form["city_select"]
-        if form_id == "0":
+    if session['logged_in'] == False:
+       return redirect(url_for("login_page"))
+    else:        
+        db = current_app.config["db"]
+        # db.create_initial_cities() 
+        # db.create_initial_vets() # This function should be used after deleting all vets
+        now_user = session['user_id']
+        if request.method == "GET":
             vets = db.get_vets()
-            selected_city = 0
-        else:
-            selected_city = db.get_cityname(form_id)
-            vets = db.get_selected_vets(form_id)
+            #db.create_initial_vets()
             for vet in vets:
                 print(vet["cityname"])
                 score = vet["score"]
                 score = score * 20
                 vet["score"] = score
             cities = db.get_vet_cities()
-        return render_template("findVet/findVet.html", vets=vets,  cities=cities  if cities else None, selected_city=selected_city, now_user = now_user)
+            return render_template("findVet/findVet.html", vets=vets,cities=cities if cities else None, now_user = now_user)
+        else:
+            form_id = request.form["city_select"]
+            if form_id == "0":
+                vets = db.get_vets()
+                selected_city = 0
+            else:
+                selected_city = db.get_cityname(form_id)
+                vets = db.get_selected_vets(form_id)
+                for vet in vets:
+                    print(vet["cityname"])
+                    score = vet["score"]
+                    score = score * 20
+                    vet["score"] = score
+                cities = db.get_vet_cities()
+            return render_template("findVet/findVet.html", vets=vets,  cities=cities  if cities else None, selected_city=selected_city, now_user = now_user)
 
 
 @app.route("/findVet/<int:vet_key>", methods=["GET","POST"])
