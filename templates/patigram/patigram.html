@@ -5,34 +5,43 @@
 {% block content %}
 
 
-{% if posts %}
+{% if patigrams %}
     <ul class="list-group list-group-flush">
-      {% for post_key, post in posts %}
-      <li class="list-group-item" id="main_list_two"> 
-        <div class="media-body">
-            <div class = "post-title">
-                <p class="user-name text-info">{{ post.userid}}</p>
-                <p class="post-text text-info">{{post.title}}</p>
-            </div>
-            
-            <img src="{{ url_for('static',filename='patigram/') }}{{post.photo}}" class="rounded border border-info rounded" alt="{{ url_for('static', filename='') }}{{post.photo}}"> 
-            <div class="like" >
-                <button type="button " class="btn btn-outline-info" > &hearts; </button>
-                <button type="button" class="btn btn-outline-info"  > Like number </button>
-                <button type="button"  onclick="window.location.href='{{ url_for('patigram_custom_page', post_key=post_key) }}';"  class="btn btn-outline-info float-right" > See Detail</button>>
-            </div> 
-            
-            <form class="form" action="" method="post" name="comment_add">
-                <div class="form-group ">
-                  
-                    <input class="form-control "  name="comment" id="comment" rows="1" placeholder="add comment"></textarea>
-                    <button type="submit" class="btn btn-outline-info float-right" name="add" value= {{post.postid}}> Add </button>
-                </div>
-            </form>
-               
-        </div>  
-     </li> 
-     
+      {% for post_key, postN in patigrams %}
+        {% set post = postN[0] -%}
+        {% set likeN = postN[1] -%}
+        {% set isliked = postN[2] -%}
+            <li class="list-group-item" id="main_list_two"> 
+                <div class="media-body">
+                    <div class = "post-title">
+                        <p class="user-name text-info">@{{ post.userid}}</p>
+                        <p class="post-text text-info">{{post.title}}   </p>
+                    </div>
+                    
+                    <img src="{{ url_for('static',filename='patigram/') }}{{post.photo}}" class="rounded border border-info rounded" alt="{{ url_for('static', filename='') }}{{post.photo}}"> 
+                    <div class="like" >
+                        {%if isliked == 0 %}
+                            <button type="button " onclick="window.location.href='{{ url_for('patigram_like', post_key=post_key) }}';" class="btn btn-outline-info" > &hearts; </button>
+                        {%else%}
+                            <button type="button " onclick="window.location.href='{{ url_for('patigram_delete_like', post_key=post_key) }}';" class="btn btn-outline-dark" > &hearts; </button>
+                        {%endif%}
+                        <button type="button" class="btn btn-outline-info"  > {{likeN}} </button>
+                        <button type="button"  onclick="window.location.href='{{ url_for('patigram_custom_page', post_key=post_key) }}';"  class="btn btn-outline-info float-right" > See Detail</button>
+                    </div> 
+                    <div class="float-right" >
+                        <p class="text-info ">{{ post.postdate}}</p>  
+                    </div>
+                    <form class="form" action="" method="post" name="comment_add">
+                        <div class="form-group ">
+                        
+                            <input class="form-control "  name="comment" id="comment" rows="1" placeholder="add comment"></textarea>
+                            <button type="submit" class="btn btn-outline-info float-right" name="add" value= {{post.postid}}> Add </button>
+                        </div>
+                    </form>
+                    
+                </div>  
+            </li> 
+        
   
      
       {% endfor %}
