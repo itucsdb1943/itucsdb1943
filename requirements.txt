@@ -1,7 +1,7 @@
 Flask>=1.0
 psycopg2-binary>=2.7
 gunicorn>=19.9
-flask_login
+flask-login
 Flask-WTF==0.14
 WTForms-Components==0.10.4
 colour==0.1.5
