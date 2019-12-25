@@ -1,4 +1,4 @@
-Parts Implemented 3olpşşşy Bengisu Almıla Pınar
+Parts Implemented by Bengisu Almıla Pınar
 ===============================
 
 Patigram post issues like creation, deletion and update operations are implemented. Likes and comments for Patigram is implemented. Pages related to the FindVet are implemented, such as filtering veterinaries, rating veterinaries, updating veterinaries and ratings, and deleting veterinaries. Any function about FindVet and Patigram coded by me. Moreover, initilazion function which consists of queries creating tables and navbar except some alterations are implemented.
