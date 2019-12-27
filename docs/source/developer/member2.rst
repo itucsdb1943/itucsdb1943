@@ -10,7 +10,7 @@ Every user can share patigram posts and they can update or delete their posts.
 Attributes of Post Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*POSTID SERIAL 
+*POSTID SERIAL PRIMARY KEY
 	Primary key of patigram post
 *USERID INTEGER REFERENCES Users (USERID)
 	The owner of the post
@@ -152,7 +152,7 @@ Comment table created for in case of that users want to make comments to the pos
 Attributes of Comment Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*COMMENTID SERIAL 
+*COMMENTID SERIAL PRIMARY KEY 
     Primary key for comment table
 *POSTID INTEGER NOT NULL REFERENCES Post (POSTID)
     Foreign key to post table, indicates owner post
@@ -231,7 +231,7 @@ Likes table is created for liking posts, users can like or withdraw their like f
 Attributes of Likes Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*LIKEID SERIAL
+*LIKEID SERIAL PRIMARY KEY
     Primary key for comment table
 *POSTID INTEGER REFERENCES Post (POSTID)
     Foreign key to post table, indicates the post which is liked
