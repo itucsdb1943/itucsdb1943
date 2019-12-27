@@ -649,7 +649,6 @@ Select
 ^^^^^
 Two functions are implemented named get_vet_cities and get_cityname. get_cityname function used for obtain cityname from plate get. get_vet_cities function is implemented for filtering, this functions returns cities with one condition; at least one veterinary have to be found in every city returned.
 .. code-block:: python
-
     def get_vet_cities(self):
         with dbapi2.connect(self.url) as connection:
             cities = []
@@ -673,4 +672,4 @@ Two functions are implemented named get_vet_cities and get_cityname. get_citynam
             city_name = cursor.fetchone()
             city_name = city_name[0]
             return city_name
-    
+. 
