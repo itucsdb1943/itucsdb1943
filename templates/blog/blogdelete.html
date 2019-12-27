@@ -1,8 +1,11 @@
 {% extends "navbar.html" %}
 {% block title %} Blog Page {%endblock %}
+{%block csslinks%}
+<link rel="stylesheet" href="{{ url_for('static', filename='blogdelete.css') }}">
+{%endblock%}
 {% block content %}
 
-<h1 class="title" align = "center" >Blogs</h1>
+<h1 class="title" >Blogs</h1>
 
     {% if blogs %}
     <form  class="form" action="" method="post" name="blog_list">
@@ -24,7 +27,7 @@
 
       <div class="field is-grouped">
         <div class="control">
-          <button type="submit" class="button is-danger is-small">Delete</button>
+          <button type="submit" class="button1">Delete</button>
         </div>
       </div>
     </form>
