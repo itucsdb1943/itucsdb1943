@@ -50,7 +50,7 @@ If the user is the owner of the displayed post in detail page, update and delete
 Patigram Update Page
 -----------------------------
 
-.. figure:: images/bengisu/patigram_update.JPG
+.. figure:: images/bengisu/patigram_update.jpg
      :scale: 100 %
      :alt: conversation with message
 
@@ -99,7 +99,7 @@ FindVet Detail Page
 
 This page involves more informations about veterinary, such as telephone number, detailed address, three scores which are service, price and overall score.
 
-.. figure:: images/bengisu/vet_evalutions.JPG
+.. figure:: images/bengisu/vet_evalutions.jpg
      :scale: 100 %
      :alt: conversation with message
 
