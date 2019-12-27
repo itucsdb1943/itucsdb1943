@@ -1,16 +1,20 @@
 User Guide
 ==========
 
-**In this sectio,n we will talk about the usage of website with visual contents.**
+PetWorld is a website which consists of beneficial and playful contents. It mainly targets pet owners and pet lovers as users. PetWorld is a website which consists of beneficial and playful contents. It mainly targets pet owners and pet lovers as users.
+Please create an account for more sophisticated particulars.
 
-**to add a picture, use the following example**::
+Home page
+^^^^^
 
-   .. figure:: picture.png
-      :scale: 50 %
-      :alt: map to buried treasure
 
-      This is the caption of the figure (a simple paragraph).
+.. figure:: images/bengisu/home.png
+   :scale: 100 %
+   :alt: home
 
+   Home page for logined in user
+
+We implemented this website for our class called Database Systems as three friends. You can find more information about our lovely website from each user's explanation.  
 .. toctree::
 
    member1
