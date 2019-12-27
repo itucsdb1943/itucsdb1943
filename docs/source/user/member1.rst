@@ -10,7 +10,7 @@ User Registration Page
      :scale: 100 %
      :alt: register page
 
-    Figure 1: Register page
+     Figure 1: Register page
 
 This page is used to register user to PetWorld website. User has to write email, password, name and surname. Email has to never used in the system before.
 After that password will be hashed and the informations are saved to Database.
@@ -26,7 +26,7 @@ Login Page
      :scale: 100 %
      :alt: login page
 
-    Figure 2: Login page
+     Figure 2: Login page
 
 
 This page is used to login of the user to website. User has to fill email and password and push the submit button. After the written informations are checked with the information from database. Firstly email checked is it used and after that password are compared. If the email and password is true, user is directed to home page. Also user can go register page with sign up button.
@@ -39,7 +39,7 @@ Notices Page
      :scale: 100 %
      :alt: Lost notices page
 
-    Figure 3: Lost notices page
+     Figure 3: Lost notices page
 
 In this page users can share notice about pet. Notices can be divided two parts; Lost and get adopt notices. Lost notices are about Lost pets. If the pet is lost, people share their information Lost pet.
 
@@ -47,7 +47,7 @@ In this page users can share notice about pet. Notices can be divided two parts;
      :scale: 100 %
      :alt: Lost notices page
 
-    Figure 4: Find notices page
+     Figure 4: Find notices page
 
 Get adopt notices are about pets which are searching new Home. In the main page, users can see the notices image, place, and shared time.
 
@@ -55,7 +55,7 @@ Get adopt notices are about pets which are searching new Home. In the main page,
      :scale: 100 %
      :alt: Notice detail page
 
-    Figure 5: Notice detail page
+     Figure 5: Notice detail page
 
 The details of the notices are can be seen after the pushed Go Details button. In details, creator's name and surname , gender, age, strain and contact of owner. User can be update their notice's title with pushing update your notice button.
 
@@ -63,7 +63,7 @@ The details of the notices are can be seen after the pushed Go Details button. I
      :scale: 100 %
      :alt: Notice add page
 
-    Figure 6: Notice add page
+     Figure 6: Notice add page
 
 In the notice add page, user add page, age, strain, gender, contact information etc. Also user select the type of notice and submit it.
 
@@ -74,7 +74,7 @@ Profile Page
      :scale: 100 %
      :alt: profile page
 
-    Figure 7: Profile page
+     Figure 7: Profile page
 
 In this page, the details of the user can be seen. User's name and surname, title ( veterinary or pet owner), e-mail adress, website adress, register date, and social media address links.
 
@@ -82,7 +82,7 @@ In this page, the details of the user can be seen. User's name and surname, titl
      :scale: 100 %
      :alt: avatar changing page
 
-    Figure 8: Avatar changing page
+     Figure 8: Avatar changing page
 
 If the user clicked to '' change your avatar '' button, user can change the avatar. Also user can delete the account with ''Delete account'' button.
 
@@ -90,7 +90,7 @@ If the user clicked to '' change your avatar '' button, user can change the avat
      :scale: 100 %
      :alt: Another user's profile page
 
-    Figure 8: Another user's profile page
+     Figure 8: Another user's profile page
 
 
 
@@ -104,7 +104,7 @@ Notifications
      :scale: 100 %
      :alt: Notifications page
 
-    Figure 9: Notifications page
+     Figure 9: Notifications page
 
 
 
