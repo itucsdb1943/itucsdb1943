@@ -17,7 +17,7 @@ In this page users can see all posts lined up by date. Title, owner, date and li
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 2: Liked Button
+     Figure 2: Liked Button
 
 If logined user has already liked a post, like button of that post will be colored to grey like in figure 2. Button's color will be converted to the blue when the like is withdrawn.
 
@@ -27,7 +27,7 @@ Patigram Detail Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 3: Detail Page of Patigram
+     Figure 3: Detail Page of Patigram
 
 Every post has a detail page. Detail page consists of comments and description of post, if there is, in addition to the home page.
 
@@ -35,7 +35,7 @@ Every post has a detail page. Detail page consists of comments and description o
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 4: Comments of a post
+     Figure 4: Comments of a post
 
 All comments can be displayed by scrolling mouse in the comment item as can be seen from figure 4.
 
@@ -43,7 +43,7 @@ All comments can be displayed by scrolling mouse in the comment item as can be s
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 5: Delete and Update buttons
+     Figure 5: Delete and Update buttons
 
 If the user is the owner of the displayed post in detail page, update and delete buttons which can be seen in figure 5 will be appeared. Users can delete that post or directed to the update page.
 
@@ -54,7 +54,7 @@ Patigram Update Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 6: Update page
+     Figure 6: Update page
 
     Users can change description and title of their posts. They have to be mark checkboxes which they want to change then save it. For example if a user live title empty, title won't be change even the user type some text to title's text area.
 
@@ -65,7 +65,7 @@ Patigram Add Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 7: Post Add page
+     Figure 7: Post Add page
 
 Users can reach this page via navbar-> Add -> Patigram. Every user can share a post, but title and image are compulsory to share post.
 
@@ -84,7 +84,7 @@ In this page, users can see all veterinaries. A  veterinary's name, city, distri
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 9: FindVet filter
+     Figure 9: FindVet filter
 
 As can be seen from figure 9, veterinaries can be filter by city, the wiev will be same as home page only veterinary number will be change in the page. Users can reach to detail page by clicking to the vet.
 
@@ -95,7 +95,7 @@ FindVet Detail Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 10: Veterinary detail page
+     Figure 10: Veterinary detail page
 
 This page involves more informations about veterinary, such as telephone number, detailed address, three scores which are service, price and overall score.
 
@@ -103,7 +103,7 @@ This page involves more informations about veterinary, such as telephone number,
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 11: Vet evaluations
+     Figure 11: Vet evaluations
 
 In the bottom of the page, all evaluations made by users can be seen. Evaluations are ordered by date; therefore it will be more clear in case of that veterinary changes service quality. If current user has rating of that veterinary, a text input will be appear on the evaluation which enables users to change their comment. Users will be directed to the rating add page if they click "Rating" button which is shown figure 10.
 
@@ -114,6 +114,6 @@ findVet Add Rating Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 12: Add rating
+     Figure 12: Add rating
 
 Users can evaluate a veterinary from this page. The are three type scores which are price, overall and service for understanding the quality of vet clearly. Title and description can be appended to explaine anything users wants. If a user has already created rating to that vet, old rating will be deleted and new one will be inserted.
