@@ -497,7 +497,6 @@ Create
 Users can evaluate veterinaries by adding rate. Rate's scores were restricted in [0,5] interval by range input elements.
 
 .. code-block:: python
-
     def add_rate(self, rate):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -523,8 +522,8 @@ Users can evaluate veterinaries by adding rate. Rate's scores were restricted in
 Select
 ^^^^^
 Evaluations made before are displayed in vet custom page, all ratings are pulled for  the vet in get_rates function. 
-.. code-block:: python
 
+.. code-block:: python
     def get_rates(self,vetid):
         rates = []
         with dbapi2.connect(self.url) as connection:
@@ -543,8 +542,7 @@ Update
 ^^^^^
     Users can change their rating comments.
 
-    ..code-block:: python
-
+.. code-block:: python
     def update_rating(self,vetid,userid,comment,date):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -561,7 +559,6 @@ Delete
 Users can not delete their ratings. But if they try to add second rating to the same vet, their old rate will be deleted and new one will be added. delete_user_rating function is used when a user is deleted from database.
 
 .. code-block:: python
-
     def delete_user_rating(self,userid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -647,8 +644,8 @@ This table should be consist of all 81 cities in Turkey, but necessary cities ar
 Select
 ^^^^^
 Two functions are implemented named get_vet_cities and get_cityname. get_cityname function used for obtain cityname from plate get. get_vet_cities function is implemented for filtering, this functions returns cities with one condition; at least one veterinary have to be found in every city returned.
-.. code-block:: python
 
+.. code-block:: python
     def get_vet_cities(self):
         with dbapi2.connect(self.url) as connection:
             cities = []
