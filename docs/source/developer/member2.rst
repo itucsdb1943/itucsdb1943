@@ -30,6 +30,7 @@ A class named Post is created for Patigram post operations.
 Post Class
 ^^^^^
 .. code-block:: python
+
     class Post:
         def __init__(self, postid, userid, postdate, photo, title, description=None, posttag=None):
             self.postid = postid
@@ -73,6 +74,7 @@ Select
 There are 3 select functions name get_post, get_posts and get_post_user. get_posts function which returns all posts is for displaying all posts in home page. get_post returns only one post for detail page. get_post_user function returns userid of that post to check whether current user owner of that post or not.
 
 .. code-block:: python
+
     def get_post(self,post_key):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -109,6 +111,7 @@ Update
 Users can change their post's title and description.
 
 .. code-block:: python
+
     def update_patigram(self,postid,title,description):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -123,7 +126,8 @@ Delete
 
 Every user can delete only their own post by dint of delete_patigram function. Firstly, likes and comments related to the post are deleted because of reference issues. delete_post function is used in case of a user deletion by Alperen Cesur.
 
-.. code-block:: python        
+.. code-block:: python
+
     def delete_patigram(self,postid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -197,6 +201,7 @@ Select
 Comments selected for listing in post detail page. Comment and users tables joined to get user's name and surname.
 
 .. code-block:: python
+
     def get_comments(self, posttype, postid):
         comments = []
         with dbapi2.connect(self.url) as connection:
@@ -216,6 +221,7 @@ Delete
 Users can not delete their comments ,I delete comments when deleting post. This function is implemented for user deleting, so it is used by Alperen Cesur.  
 
 .. code-block:: python
+
     def delete_user_comments(self,userid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -261,6 +267,7 @@ Select
 patigram_get_like_num, patigram_is_user_liked functions are implemented. patigram_get_like_num function returns post's like number individually for home page and post detail page. patigram_is_user_liked returns whether current user is liked the post. This function is used in home page for every post separately.
 
 .. code-block:: python
+
     def patigram_get_like_num(self, postid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -291,6 +298,7 @@ Delete
 In patigram_delete_like and delete_user_likes functions likes are deleted. delete_user_likes function is implemented in case of deletion of a user. patigram_delete_like function is used for withdrawing likes.A post's likes will be deleted whenever post is deleted which is mentioned in post delete part.
 
 .. code-block:: python
+
     def patigram_delete_like(self,postid,userid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -344,6 +352,7 @@ A class named Veteriner is created for Vet operations.
 Veteriner Class
 ^^^^^
 .. code-block:: python
+
     class Veteriner:
         def __init__ (self, vetid, address, district, serviceRate, priceRate, telephone, overallScore, vetName, voteNum, cityName):
             self.vetid = vetid
@@ -362,6 +371,7 @@ Create
 Users can not add veterinary, some veterinaries appended beginning of the program.
 
 .. code-block:: python
+
     def create_initial_vets(self):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -480,6 +490,7 @@ A class named Rate is created for Rating vet operations.
 Rate Class
 ^^^^^
 .. code-block:: python
+
     class Rate:
         def __init__(self, rateid, userid, vetid, overallScore, priceRate, serviceRate, comment, title, date):
             self.rateid = rateid
@@ -497,6 +508,7 @@ Create
 Users can evaluate veterinaries by adding rate. Rate's scores were restricted in [0,5] interval by range input elements.
 
 .. code-block:: python
+
     def add_rate(self, rate):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -524,6 +536,7 @@ Select
 Evaluations made before are displayed in vet custom page, all ratings are pulled for  the vet in get_rates function. 
 
 .. code-block:: python
+
     def get_rates(self,vetid):
         rates = []
         with dbapi2.connect(self.url) as connection:
@@ -543,6 +556,7 @@ Update
     Users can change their rating comments.
 
 .. code-block:: python
+
     def update_rating(self,vetid,userid,comment,date):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -559,6 +573,7 @@ Delete
 Users can not delete their ratings. But if they try to add second rating to the same vet, their old rate will be deleted and new one will be added. delete_user_rating function is used when a user is deleted from database.
 
 .. code-block:: python
+
     def delete_user_rating(self,userid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -625,6 +640,7 @@ Create
 This table should be consist of all 81 cities in Turkey, but necessary cities are inserted since veterinaries which are appended did not comprise all cities.
 
 .. code-block:: python
+
     def create_initial_cities(self):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -646,6 +662,7 @@ Select
 Two functions are implemented named get_vet_cities and get_cityname. get_cityname function used for obtain cityname from plate get. get_vet_cities function is implemented for filtering, this functions returns cities with one condition; at least one veterinary have to be found in every city returned.
 
 .. code-block:: python
+
     def get_vet_cities(self):
         with dbapi2.connect(self.url) as connection:
             cities = []
