@@ -123,8 +123,7 @@ Delete
 
 Every user can delete only their own post by dint of delete_patigram function. Firstly, likes and comments related to the post are deleted because of reference issues. delete_post function is used in case of a user deletion by Alperen Cesur.
 
-.. code-block:: python
-        
+.. code-block:: python        
     def delete_patigram(self,postid):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -649,6 +648,7 @@ Select
 ^^^^^
 Two functions are implemented named get_vet_cities and get_cityname. get_cityname function used for obtain cityname from plate get. get_vet_cities function is implemented for filtering, this functions returns cities with one condition; at least one veterinary have to be found in every city returned.
 .. code-block:: python
+
     def get_vet_cities(self):
         with dbapi2.connect(self.url) as connection:
             cities = []
