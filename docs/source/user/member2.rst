@@ -9,7 +9,7 @@ Patigram Home Page
      :scale: 100 %
      :alt: conversation with message
 
-    Figure 1: Patigram home page
+     Figure 1: Patigram home page
 
 In this page users can see all posts lined up by date. Title, owner, date and like number of a post can be seen. Every user can make comment about post with "Add" button, then they will be directed to the post's custom page. "See Detail" button is used for passing detail page of that post. Button with the heart shape can be used for liking the post or withdrawing like from the post.
 
