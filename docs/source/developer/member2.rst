@@ -173,6 +173,7 @@ Operations
 Comment class id created to be used in necessary functions. Comment is only available for patigram.
 
 .. code-block:: python
+
     class Comment:
         def __init__(self, commentid, postid, userid, date, comment, posttype ):
             self.commentid = commentid

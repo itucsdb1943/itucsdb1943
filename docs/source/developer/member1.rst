@@ -36,6 +36,7 @@ Users class created to make user operations.
 Users Class
 ^^^^^^^^^^^
 .. code-block:: python
+
       class Users(UserMixin):
           def __init__(self,id,name,surname,username,isVet,password,facebookLink,twitterLink,youtubeLink,instagramLink,websiteLink,registerTime,photoURL):
               self.id = id
@@ -60,6 +61,7 @@ Create
 To create new user, user make register operation and the information of the user is create into database
 
 .. code-block:: python
+
       def register_page():
          registerTime = now.strftime("%d/%m/%y %H:%M:%S")
          with dbapi2.connect(url) as connection:
@@ -75,6 +77,7 @@ To create new user, user make register operation and the information of the user
 Also password is hashed before the save into database.
 
 .. code-block:: python
+
 password = form['password']
 hashed = hasher.hash(password)
 
@@ -85,6 +88,7 @@ Select
 Select operation is used to get detail information of the user in profile page.
 
 .. code-block:: python
+
       def get_user_detail(self,userid):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -98,6 +102,7 @@ Select operation is used to get detail information of the user in profile page.
 Also select operation is used to check password of the user in the login operation.
 
 .. code-block:: python
+
       def get_user(id):
          with dbapi2.connect(url) as connection:
             cursor = connection.cursor()
@@ -112,6 +117,7 @@ Update
 Update operation is used to change avatar of the user.
 
 .. code-block:: python
+
       def update_user_photo(self,userid,url):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -123,6 +129,7 @@ Delete
 Delete operation is used to delete all of the information about the user. Before that, all of the references are deleted about this user.
 
 .. code-block:: python
+
       def delete_user(self,userid):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -173,6 +180,7 @@ Notice class
 ^^^^^^^^^^^^^
 
 .. code-block:: python
+
       class Notice:
          def __init__(self,noticeID,userID,name,surname,animalType,age,strain,gender,photoURL,isLost,description,contact,date,place):
             self.noticeID = noticeID
@@ -254,6 +262,7 @@ Delete
 Before the delete user, notices of the user are deleted.
 
 .. code-block:: python
+
       def delete_notices(self,userid):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -295,6 +304,7 @@ Notification Class
 ^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
+
       class Notificition:
          def __init__(self,notificationID,userName,userSurname,postTitle,notificationType,notificationTime,isSeen,postType,description,content):
             self.notificitionID = notificationID
@@ -313,6 +323,7 @@ Create
 To add notification add_notification is used.
 
 .. code-block:: python
+
       def add_notification(self,postType,postTitle,notType,userID,ownerID,content,time):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -326,6 +337,7 @@ Select
 To get all notifications of the logined user, get_notifications function is user.
 
 .. code-block:: python
+
       def get_notifications(self):
          notifications = []
          with dbapi2.connect(self.url) as connection:
@@ -362,6 +374,7 @@ Update
 After user see the notifications, all of IsSeen attributes updated to 1 of user's notifications.
 
 .. code-block:: python
+
       def notification_seen(self,userid):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -374,6 +387,7 @@ Delete
 Before deleting user, all of the notifications of the user is deleted.
 
 .. code-block:: python
+
       def delete_notifications(self,userid):
          with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()

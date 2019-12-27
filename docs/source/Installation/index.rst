@@ -1,3 +1,5 @@
+Installation Guide
+===============
 
 Pulling this project to your computer is not enough to run it. You should install some python packages in addition to the python. 
 1. First you should install pyhton (>=3.4)  
