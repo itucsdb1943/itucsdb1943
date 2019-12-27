@@ -6,7 +6,7 @@ Blog Table, Class & Functions
 ------------------------------
 Users can add, delete, update the blogs.
 Attributes of Blog Table
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^
 * BLOGID SERIAL PRIMARY KEY
     Primary key of blog
 * USERID INTEGER REFERENCES Users(USERID)
@@ -33,22 +33,23 @@ A Blog class was created to operate Blog operations.
 Create
 ^^^^^^^
 Blog class was used as constructor for adding new blog. 
-..code-block:: pyhton
-class Blog:
-	def __init__(self, blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate):
-		self.blogid = blogid
-		self.userid = userid
-		self.blogtag = blogtag 
-		self.title = title
-		self.text = text
-		self.likeNum = likeNum
-		self.dislikeNum = dislikeNum
-		self.photo = photo
-		self.postdate = postdate
+.. code-block:: python
+	class Blog:
+		def __init__(self, blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate):
+			self.blogid = blogid
+			self.userid = userid
+			self.blogtag = blogtag 
+			self.title = title
+			self.text = text
+			self.likeNum = likeNum
+			self.dislikeNum = dislikeNum
+			self.photo = photo
+			self.postdate = postdate
 
 Entered informations were added to the database and Blog class.
 
-..code-block:: pyhton
+.. code-block:: python
+
     def add_blog(self, blog):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -61,7 +62,8 @@ Entered informations were added to the database and Blog class.
 Select
 ^^^^^^^
 There are 2 select functions. get_blog function returns the related blog's informations in the blog information page. get_blogs function returns all blogs in the blog home page.
-..code-block:: python
+.. code-block:: python
+
     def get_blog(self, blog_key):
        with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -71,7 +73,9 @@ There are 2 select functions. get_blog function returns the related blog's infor
             blog = Blog(blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate)
             return blog
        return None
-..code-block:: python	
+       
+.. code-block:: python
+
     def get_blogs(self):
         blogs = []
         with dbapi2.connect(self.url) as connection:
@@ -86,7 +90,8 @@ There are 2 select functions. get_blog function returns the related blog's infor
 Update
 ^^^^^^^
 Users can update title, tag and text of the blog.
-..code-block:: python
+.. code-block:: python
+
     def update_blog(self, blogid, title, blogtag, text):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -100,7 +105,8 @@ Users can update title, tag and text of the blog.
 Delete
 ^^^^^^
 Users can delete the blogs. 
-..code-block:: python
+.. code-block:: python
+
     def delete_blog(self, blog_key):
         with dbapi2.connect(self.url) as  connection:
             cursor = connection.cursor()
@@ -152,23 +158,25 @@ To able to create, select, update and delete foundations a class and functions w
 Create
 ^^^^^^
 Foundation class was used as constructor for adding new foundation.
-..code-block:: pyhton
-class Foundation():
-    def __init__(self, foundid, photo, donationurl, about, foundname, address, facebook, twitter,instagram, website):
-        self.foundid = foundid
-        self.photo = photo
-        self.donationurl = donationurl
-        self.about = about
-        self.foundname = foundname
-        self.address = address
-        self.facebook = facebook
-        self.twitter = twitter
-        self.instagram = instagram
-        self.website = website
+.. code-block:: python
+
+	class Foundation():
+	    def __init__(self, foundid, photo, donationurl, about, foundname, address, facebook, twitter,instagram, website):
+		self.foundid = foundid
+		self.photo = photo
+		self.donationurl = donationurl
+		self.about = about
+		self.foundname = foundname
+		self.address = address
+		self.facebook = facebook
+		self.twitter = twitter
+		self.instagram = instagram
+		self.website = website
 
 Entered informations were added to the database and Foundation class by adding separately the Foundation and FoundationContact tables.
 
-..code-block:: python
+.. code-block:: python
+
     def add_foundation(self, foundation):
         with dbapi2.connect(self.url) as connection:
             cursor = connection. cursor()
@@ -205,7 +213,8 @@ There are 2 selecting functions: get_foundation and get_foundations. Join operat
         return None
 
 get_foundations is used for select all foundations 
-..code-block:: python
+
+.. code-block:: python
     def get_foundations(self):
         foundations = []
         with dbapi2.connect(self.url) as connection:
@@ -221,7 +230,9 @@ get_foundations is used for select all foundations
 Update
 ^^^^^^
 Users can update foundation's about text and donation URL.
-..code-block:: pyhton
+
+.. code-block:: python
+
     def update_foundation(self, foundid, about, donationurl):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
@@ -236,7 +247,8 @@ Users can update foundation's about text and donation URL.
 Delete
 ^^^^^^
 Users can delete foundations.
-..code-block:: pyhton
+.. code-block:: python
+
     def delete_foundation(self, foundation_key):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
