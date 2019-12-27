@@ -5,8 +5,10 @@ The creating, selecting, updating, deleting operations of blog page were impleme
 Blog Table, Class & Functions
 ------------------------------
 Users can add, delete, update the blogs.
+
 Attributes of Blog Table
-^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * BLOGID SERIAL PRIMARY KEY
     Primary key of blog
 * USERID INTEGER REFERENCES Users(USERID)
@@ -33,7 +35,9 @@ A Blog class was created to operate Blog operations.
 Create
 ^^^^^^^
 Blog class was used as constructor for adding new blog. 
+
 .. code-block:: python
+
 	class Blog:
 		def __init__(self, blogid, userid, blogtag, title, text, likeNum, dislikeNum, photo,postdate):
 			self.blogid = blogid
@@ -62,6 +66,7 @@ Entered informations were added to the database and Blog class.
 Select
 ^^^^^^^
 There are 2 select functions. get_blog function returns the related blog's informations in the blog information page. get_blogs function returns all blogs in the blog home page.
+
 .. code-block:: python
 
     def get_blog(self, blog_key):
@@ -90,6 +95,7 @@ There are 2 select functions. get_blog function returns the related blog's infor
 Update
 ^^^^^^^
 Users can update title, tag and text of the blog.
+
 .. code-block:: python
 
     def update_blog(self, blogid, title, blogtag, text):
@@ -105,6 +111,7 @@ Users can update title, tag and text of the blog.
 Delete
 ^^^^^^
 Users can delete the blogs. 
+
 .. code-block:: python
 
     def delete_blog(self, blog_key):
@@ -158,6 +165,7 @@ To able to create, select, update and delete foundations a class and functions w
 Create
 ^^^^^^
 Foundation class was used as constructor for adding new foundation.
+
 .. code-block:: python
 
 	class Foundation():
@@ -201,7 +209,9 @@ Entered informations were added to the database and Foundation class by adding s
 Select
 ^^^^^^
 There are 2 selecting functions: get_foundation and get_foundations. Join operation was used for both two functions. get_foundation is used for select only one foundation
-..code-block:: python
+
+.. code-block:: python
+
     def get_foundation(self, foundation_key):
         with dbapi2.connect(self.url) as connection:
             cursor = connection.cursor()
