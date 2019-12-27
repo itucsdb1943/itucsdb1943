@@ -672,4 +672,6 @@ Two functions are implemented named get_vet_cities and get_cityname. get_citynam
             city_name = cursor.fetchone()
             city_name = city_name[0]
             return city_name
-^^^^^^
+UPDATE AND DELETE
+^^^^^
+Uptade and delete operations were not necessary for this table
